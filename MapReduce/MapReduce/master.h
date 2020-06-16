@@ -15,14 +15,9 @@ struct Config
 };
 
 
-void to_json(json& j, const KeyValue& p) {
-  j = json{ {"Key", p.Key}, {"Value", p.Value}, };
-}
+void to_json(json& j, const KeyValue& p);
 
-void from_json(const json& j, KeyValue& p) {
-  j.at("Key").get_to(p.Key);
-  j.at("Value").get_to(p.Value);
-}
+void from_json(const json& j, KeyValue& p);
 
 
 class Master
@@ -44,13 +39,13 @@ class Master
   Phase current;
 
   // common map
-  void doMap(const std::string& jobName, const std::string& file,int mapTaskN, int nReduce, mapFunc mapf);
 
   // common reduce
-  void doReduce();
+  void doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef);
 public:
   
   std::string GenerateMapName();
+  void doMap(const std::string& jobName, const std::string& file,int mapTaskN, int nReduce, mapFunc mapf);
   std::string GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce);
 
   void BeginSequential();

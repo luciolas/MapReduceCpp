@@ -5,6 +5,35 @@
 #include <functional>
 
 
+size_t ihash(const std::string& s)
+{
+  std::hash<std::string> hasher{};
+  return hasher(s );
+}
+
+
+
+void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef)
+{
+  std::ifstream f;
+  auto filename = GenerateReduceName(jobName, mapTaskN, nReduce);
+  f.open(filename);
+  if (f.is_open())
+  {
+    char* buffer[256];
+    std::string buffers;
+    std::unordered_map < std::string, std::string> key_val;
+    while (std::getline(f, buffers) )
+    {
+      auto j = json::parse(buffers);
+      auto kv = j.get<KeyValue>();
+
+    }
+
+
+  }
+}
+
 void Master::doMap(const std::string& jobName,const std::string& file, int mapTaskN, int nReduce, mapFunc mapf)
 {
   // Read files
@@ -30,7 +59,7 @@ void Master::doMap(const std::string& jobName,const std::string& file, int mapTa
     for (auto& kv : kv_result)
     {
       // Encode each pairs
-      auto rn = ihash(kv.Key) & nReduce;
+      auto rn = ihash (kv.Key) & nReduce;
       json output_json = kv;
       auto found = output_encodes.find(rn);
       if (found != output_encodes.end())
@@ -58,8 +87,18 @@ void Master::doMap(const std::string& jobName,const std::string& file, int mapTa
 }
 
 
-size_t ihash(const std::string& s)
+std::string Master::GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce)
 {
-  std::hash<std::string> hasher{};
-  return hasher(s);
+  std::stringstream ss;
+  ss << jobName << "-" << mapTaskN << "-" << nReduce;
+  return ss.str();;
+}
+
+void to_json(json& j, const KeyValue& p) {
+  j = json{ { "Key", p.Key },{ "Value", p.Value }, };
+}
+
+void from_json(const json& j, KeyValue& p) {
+  j.at("Key").get_to(p.Key);
+  j.at("Value").get_to(p.Value);
 }

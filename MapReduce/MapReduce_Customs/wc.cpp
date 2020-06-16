@@ -1,7 +1,4 @@
 #include "wc.h"
-#include <cctype>
-#include <functional>
-#include <sstream>
 
 bool isLetter(char c)
 {
@@ -9,29 +6,6 @@ bool isLetter(char c)
 }
 
 
-template< typename Pred>
-void StringSplit(std::vector<std::string>* output, const std::string& input, Pred pred)
-{
-  std::stringstream out;
-  for (auto& c : input)
-  {
-    if pred(c)
-    {
-      out << c;
-    }
-    else
-    {
-      out.seekg(0, out.end);
-      int length = out.tellg;
-      out.seekg(0, out.beg);
-      if (length > 0) 
-      {
-        output->emplace_back(out.str());
-        out = std::stringstream{""};
-      }
-    }
-  }
-}
 
 std::vector<KeyValue> mapF(const std::string& doc, const std::string& bytes)
 {
