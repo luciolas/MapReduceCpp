@@ -1,8 +1,8 @@
 # MapReduceCpp
 MapReduce C++
 
-Learning project for MapReduce as described in: 
-http://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf
+Learning project for [MapReduce](http://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf)
+
 
 
 Tasks
