@@ -3,7 +3,7 @@
 #include <cctype>
 #include <functional>
 #include <sstream>
-
+#include <string>
 
 template< typename Pred>
 void StringSplit(std::vector<std::string>* output, const std::string& input, Pred pred)

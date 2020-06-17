@@ -19,7 +19,12 @@ std::vector<KeyValue> mapF(const std::string& doc, const std::string& bytes)
   return result;
 }
 
-std::string reduceF(const std::string& key, const std::vector<std::string>& values)
+std::string reduceF(const std::string&, const std::vector<std::string>& values)
 {
-  return std::string();
+  int result=0;
+  for (const auto& val : values)
+  {
+    result += atoi(val.c_str());
+  }
+  return std::to_string(result);
 }

@@ -11,28 +11,56 @@ size_t ihash(const std::string& s)
   return hasher(s );
 }
 
-
-
 void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef)
 {
-  std::ifstream f;
-  auto filename = GenerateReduceName(jobName, mapTaskN, nReduce);
-  f.open(filename);
-  if (f.is_open())
+  for (int i = 0; i < mapTaskN; i++)
   {
-    char* buffer[256];
-    std::string buffers;
-    std::unordered_map < std::string, std::string> key_val;
-    while (std::getline(f, buffers) )
+    std::ifstream f;
+    auto filename = GenerateReduceName(jobName, i, nReduce);
+    f.open(filename, std::ifstream::in);
+    if (f.is_open())
     {
-      auto j = json::parse(buffers);
-      auto kv = j.get<KeyValue>();
+      char* buffer[256];
+      std::string buffers;
+      std::unordered_map < std::string, std::vector<std::string>> key_val;
+      while (std::getline(f, buffers))
+      {
+        json j;
+        try
+        {
+          j = json::parse(buffers);
+        }
+        catch (const std::exception& e)
+        {
+          continue;
+        }
+        auto kv = j.get<KeyValue>();
+        auto found = key_val.find(kv.Key);
+        if (found != key_val.end())
+        {
+          key_val[kv.Key].emplace_back(kv.Value);
+        }
+        else
+        {
+          key_val[kv.Key] = std::vector <std::string>{ kv.Value };
 
+        }
+      }
+      f.close();
+      auto outputname = GenerateReduceName("second", 4, 2);
+      std::ofstream of{ outputname, std::ofstream::out };
+      for (const auto& kv : key_val)
+      {
+        auto newkv = KeyValue{ kv.first,  reducef(kv.first, kv.second) };
+        json mj = newkv;
+        of << mj << std::endl;
+      }
+      of.close();
     }
-
-
   }
+  
 }
+
 
 void Master::doMap(const std::string& jobName,const std::string& file, int mapTaskN, int nReduce, mapFunc mapf)
 {
@@ -87,10 +115,17 @@ void Master::doMap(const std::string& jobName,const std::string& file, int mapTa
 }
 
 
+std::string Master::GenerateMapName(const std::string& jobName, int mapTaskN, int nReduce)
+{
+  std::stringstream ss;
+  ss << jobName << "-" << mapTaskN << "-" << nReduce << "map";
+  return std::string();
+}
+
 std::string Master::GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce)
 {
   std::stringstream ss;
-  ss << jobName << "-" << mapTaskN << "-" << nReduce;
+  ss << jobName << "-"  << "reduce-" << mapTaskN << "-" << nReduce;
   return ss.str();;
 }
 

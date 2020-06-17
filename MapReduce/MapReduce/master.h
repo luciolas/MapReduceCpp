@@ -41,12 +41,12 @@ class Master
   // common map
 
   // common reduce
-  void doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef);
 public:
   
-  std::string GenerateMapName();
+  std::string GenerateMapName(const std::string& jobName, int mapTaskN, int nReduce);
   void doMap(const std::string& jobName, const std::string& file,int mapTaskN, int nReduce, mapFunc mapf);
   std::string GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce);
+  void doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef);
 
   void BeginSequential();
   void BeginDistributed();
