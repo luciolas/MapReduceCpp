@@ -20,7 +20,6 @@ void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, red
     f.open(filename, std::ifstream::in);
     if (f.is_open())
     {
-      char* buffer[256];
       std::string buffers;
       std::unordered_map < std::string, std::vector<std::string>> key_val;
       while (std::getline(f, buffers))

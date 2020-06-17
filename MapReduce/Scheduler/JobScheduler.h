@@ -143,7 +143,9 @@ struct T_FnPackageBuilder<R(C::*)(Args...)> : public I_FnPackage, T_FnArgs<R, Ar
   C* owner;
   Callable fn_;
   T_FnPackageBuilder() {}
-  T_FnPackageBuilder(Callable fn, C* c, Args&&... args) :
+
+  template<typename ... CArgs>
+  T_FnPackageBuilder(Callable fn, C* c, CArgs&&... args) :
     FNArgs{ args... }, owner{ c },
     fn_{ fn }
   {}
@@ -207,7 +209,6 @@ Package<T> * MakeFnPackage(T fn, TArgs&&... capture)
 {
   FnPackage<T>  * fp = new FnPackage<T>{fn, std::forward<TArgs>(capture)...};
 
-  auto somefp = (I_FnPackage*)fp;
   return new Package<T>{ fp->get_future(), fp };
 }
 
