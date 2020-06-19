@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>B:\OpenSource\luciolas\c++\MapReduce\MapReduce\JSON\single_include\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>B:\OpenSource\luciolas\c++\MapReduce\MapReduce\Scheduler;B:\OpenSource\luciolas\c++\MapReduce\MapReduce\JSON\single_include\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,12 +143,14 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapReduce\master.cpp" />
+    <ClCompile Include="MapReduce_Customs\ii.cpp" />
     <ClCompile Include="MapReduce_Customs\wc.cpp" />
     <ClCompile Include="Scheduler\JobScheduler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MapReduce\master.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="MapReduce_Customs\ii.h" />
     <ClInclude Include="MapReduce_Customs\wc.h" />
     <ClInclude Include="Scheduler\JobScheduler.h" />
   </ItemGroup>

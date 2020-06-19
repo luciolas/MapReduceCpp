@@ -1,10 +1,5 @@
 #include "wc.h"
 
-bool isLetter(char c)
-{
-  return isalpha(c);
-}
-
 
 
 std::vector<KeyValue> mapF(const std::string& doc, const std::string& bytes)

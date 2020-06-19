@@ -27,6 +27,9 @@
     <ClCompile Include="MapReduce_Customs\wc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MapReduce_Customs\ii.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scheduler\JobScheduler.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MapReduce_Customs\ii.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

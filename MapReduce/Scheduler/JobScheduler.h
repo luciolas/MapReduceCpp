@@ -36,9 +36,9 @@ template<typename R, typename ... Args>
 struct T_FnArgs : public T_FnReturn<R>
 {
   using TReturn = T_FnReturn<R>;
-  std::tuple<Args...> args_; 
+  std::tuple<std::remove_reference_t<Args>...> args_; 
   std::promise<R> p_result;
-  std::future<R> get_future()
+  std::shared_future<R> get_future()
   {
     return p_result.get_future();
   }
@@ -102,6 +102,7 @@ struct T_FnPackageBuilder<R(*)(Args...)> : public I_FnPackage , T_FnArgs<R, Args
   using Callable = R(*)(Args...);
   using FNArgs = T_FnArgs<R, Args...>;
   using IndexSeq = std::make_index_sequence<sizeof...(Args)>;
+  using ReturnType = R;
   Callable fn_;
   T_FnPackageBuilder() : FNArgs{} {}
 
@@ -129,7 +130,7 @@ struct T_FnPackageBuilder<R(*)(Args...)> : public I_FnPackage , T_FnArgs<R, Args
     this->operator()();
   }
   template<typename Ret = R>
-  std::future<Ret> get_future()
+  std::shared_future<Ret> get_future()
   {
     return FNArgs::get_future();
   }
@@ -140,13 +141,14 @@ struct T_FnPackageBuilder<R(C::*)(Args...)> : public I_FnPackage, T_FnArgs<R, Ar
 {
   using Callable = R(C::*)(Args...);
   using FNArgs = T_FnArgs<R, Args...>;
+  using ReturnType = R;
   C* owner;
   Callable fn_;
   T_FnPackageBuilder() {}
 
   template<typename ... CArgs>
   T_FnPackageBuilder(Callable fn, C* c, CArgs&&... args) :
-    FNArgs{ args... }, owner{ c },
+    FNArgs{ std::forward<CArgs>(args)... }, owner{ c },
     fn_{ fn }
   {}
 
@@ -167,7 +169,7 @@ struct T_FnPackageBuilder<R(C::*)(Args...)> : public I_FnPackage, T_FnArgs<R, Ar
   }
 
   template<typename Ret = R>
-  std::future<Ret> get_future()
+  std::shared_future<Ret> get_future()
   {
     return FNArgs::get_future();
   }
@@ -182,34 +184,26 @@ struct Package{};
 template<typename R, typename... Args>
 struct Package<R(*)(Args...)>
 {
-  std::future<R> prom;
+  std::shared_future<R> prom;
   I_FnPackage* pack;
-  ~Package()
-  {
-    delete pack;
-  }
 };
 
 template<typename R, typename C, typename... Args>
 struct Package<R(C::*)(Args...)>
 {
-  std::future<R> prom;
+  std::shared_future<R> prom;
   I_FnPackage* pack;
-  ~Package()
-  {
-    delete pack;
-  }
 };
 
 template<typename T>
 using FnPackage = T_FnPackageBuilder<T>;
 
 template<typename T, typename ... TArgs>
-Package<T> * MakeFnPackage(T fn, TArgs&&... capture)
+Package<T>  MakeFnPackage(T fn, TArgs&&... capture)
 {
   FnPackage<T>  * fp = new FnPackage<T>{fn, std::forward<TArgs>(capture)...};
 
-  return new Package<T>{ fp->get_future(), fp };
+  return Package<T>{ fp->get_future(), fp };
 }
 
 
@@ -233,6 +227,22 @@ public:
   void Start();
 
   bool Schedule(I_FnPackage* fn);
+
+  template<typename Callable, typename ... CArgs, typename RetType = typename FnPackage<Callable>::ReturnType>
+  std::shared_future<RetType> Schedule(Callable fn, CArgs&& ... args)
+  {
+    auto package = MakeFnPackage(fn, std::forward<CArgs>(args)...);
+    Schedule(package.pack);
+    return package.prom;
+  }
+
+  template<typename Callable, typename Owner, typename ... CArgs, typename RetType = typename FnPackage<Callable>::ReturnType>
+  std::shared_future<RetType> Schedule(Callable fn, Owner * o,  CArgs&& ... args)
+  {
+    auto package = MakeFnPackage(fn, o, std::forward<CArgs>(args)...);
+    Schedule(package.pack);
+    return package.prom;
+  }
 
   ~Scheduler() {};
 };

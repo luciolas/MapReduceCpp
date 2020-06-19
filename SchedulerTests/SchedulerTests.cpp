@@ -23,19 +23,32 @@ namespace SchedulerTests
     {
       auto sch_module = GetScheduler(4);
       std::string arg1{ "hello" };
-      auto doThisPackage = MakeFnPackage(&doThis, arg1);
-      sch_module->Schedule(doThisPackage->pack);
-      doThisPackage->prom.wait();
+      auto doThisPackage = MakeFnPackage(&doThis, "hello");
+      sch_module->Schedule(doThisPackage.pack);
+      doThisPackage.prom.wait();
 
       Logger::WriteMessage("Passed!\n");
 
       auto doThisPackage2 = MakeFnPackage(&printFloat, 2.0f);
-      sch_module->Schedule(doThisPackage2->pack);
-      doThisPackage2->prom.wait();
+      sch_module->Schedule(doThisPackage2.pack);
+      doThisPackage2.prom.wait();
 
-      Assert::AreEqual(1, doThisPackage2->prom.get());
+      Assert::AreEqual(1, doThisPackage2.prom.get());
 
       Logger::WriteMessage("Passed2!\n");
 		}
+
+    TEST_METHOD(TestMulti2)
+    {
+      auto sch_module = GetScheduler(std::thread::hardware_concurrency());
+      std::string arg1{ "hello" };
+      auto ret_result = sch_module->Schedule(&doThis, arg1);
+      ret_result.wait();
+      Logger::WriteMessage("Passed!\n");
+
+      auto ret_result2 = sch_module->Schedule(&printFloat, 2.0f);
+      Assert::AreEqual(1, ret_result2.get());
+      Logger::WriteMessage("Passed2!\n");
+    }
 	};
 }

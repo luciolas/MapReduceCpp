@@ -48,8 +48,8 @@ public:
   std::string GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce);
   void doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef);
 
-  void BeginSequential();
-  void BeginDistributed();
+  void BeginSequential(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF);
+  void BeginDistributed(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF);
 
   void AddAsMap(const std::string& path);
   void AddAsReduce(const std::string& path);

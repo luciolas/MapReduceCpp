@@ -18,7 +18,6 @@ void Scheduler::thread_main_loop()
     }
     {
       fn->invoke();
-      
     }
   }
 }

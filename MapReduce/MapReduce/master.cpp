@@ -3,6 +3,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <functional>
+#include "JobScheduler.h"
 
 
 size_t ihash(const std::string& s)
@@ -13,6 +14,7 @@ size_t ihash(const std::string& s)
 
 void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef)
 {
+  std::unordered_map < std::string, std::vector<std::string>> key_val;
   for (int i = 0; i < mapTaskN; i++)
   {
     std::ifstream f;
@@ -21,7 +23,6 @@ void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, red
     if (f.is_open())
     {
       std::string buffers;
-      std::unordered_map < std::string, std::vector<std::string>> key_val;
       while (std::getline(f, buffers))
       {
         json j;
@@ -42,11 +43,10 @@ void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, red
         else
         {
           key_val[kv.Key] = std::vector <std::string>{ kv.Value };
-
         }
       }
       f.close();
-      auto outputname = GenerateReduceName("second", 4, 2);
+      auto outputname = GenerateReduceName("second", mapTaskN, nReduce);
       std::ofstream of{ outputname, std::ofstream::out };
       for (const auto& kv : key_val)
       {
@@ -58,6 +58,46 @@ void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, red
     }
   }
   
+}
+
+void Master::BeginSequential(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF)
+{
+  auto n_files = input_files.size();
+  int nReduce = 5;
+  for (int i = 0; i < n_files; i++)
+  {
+    doMap("master", input_files[i], i, 4, mapf);
+  }
+
+  for (int i = 0; i < nReduce; i++)
+  {
+    doReduce("master", n_files, i, reduceF);
+  }
+}
+
+void Master::BeginDistributed(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF)
+{
+  auto n_files = input_files.size();
+  int nReduce = 5;
+  auto* s = GetScheduler(std::thread::hardware_concurrency());
+  std::vector<std::shared_future<void>> waiters;
+  for (int i = 0; i < n_files; i++)
+  {
+    waiters.push_back(s->Schedule(&Master::doMap, this, "master", input_files[i], i, nReduce, mapf));
+  }
+  for (auto& f : waiters)
+  {
+    f.wait();
+  }
+  waiters.clear();
+  for (int i = 0; i < nReduce; i++)
+  {
+    waiters.push_back(s->Schedule(&Master::doReduce, this, "master", n_files, i,reduceF));
+  }
+  for (auto& f : waiters)
+  {
+    f.wait();
+  }
 }
 
 
@@ -86,7 +126,7 @@ void Master::doMap(const std::string& jobName,const std::string& file, int mapTa
     for (auto& kv : kv_result)
     {
       // Encode each pairs
-      auto rn = ihash (kv.Key) & nReduce;
+      auto rn = ihash (kv.Key) % nReduce;
       json output_json = kv;
       auto found = output_encodes.find(rn);
       if (found != output_encodes.end())
