@@ -1,3 +1,8 @@
+# WIP 
+- Code clean up
+- Build interface
+- Build web interface for interaction
+
 # MapReduceCpp
 MapReduce C++
 
