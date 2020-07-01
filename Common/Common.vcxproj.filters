@@ -15,24 +15,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MapReduce\master.cpp">
+    <ClCompile Include="MapReduce_Customs\ii.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WorkerHandle\worker_handle.cpp">
+    <ClCompile Include="MapReduce_Customs\wc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scheduler\JobScheduler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MapReduce\master.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="common.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MapReduce_Customs\ii.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WorkerHandle\worker_handle.h">
+    <ClInclude Include="MapReduce_Customs\wc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\JobScheduler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\DeferScheduleObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

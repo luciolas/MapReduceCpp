@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package mapreduce_worker;
+
+import "mapreduce_common.proto";
+
+service MapReduceWorker {
+  rpc Work(JobMessage) returns (mapreduce_common.EmptyMessage) {}
+  rpc Shutdown(mapreduce_common.EmptyMessage) returns (mapreduce_common.EmptyMessage){}
+}
+
+
+message JobMessage {
+  enum Phase {
+    MAP =0;
+    REDUCE =1;
+  }
+
+  repeated string input = 1;
+  Phase phase = 2;
+  int32 nReduce = 3;
+  int32 nMap = 4;
+
+}

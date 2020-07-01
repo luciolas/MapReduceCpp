@@ -18,21 +18,12 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MapReduce\master.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WorkerHandle\worker_handle.cpp">
+    <ClCompile Include="worker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MapReduce\master.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WorkerHandle\worker_handle.h">
+    <ClInclude Include="worker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

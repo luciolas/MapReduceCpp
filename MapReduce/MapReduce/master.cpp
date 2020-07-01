@@ -3,8 +3,13 @@
 #include <sstream>
 #include <unordered_map>
 #include <functional>
-#include "JobScheduler.h"
+#include <Scheduler/JobScheduler.h>
+#include <Windows.h>
+#include <tchar.h>
 
+using grpc::ServerBuilder;
+using grpc::ClientContext;
+using MapReduce::Scheduler;
 
 size_t ihash(const std::string& s)
 {
@@ -66,7 +71,7 @@ void Master::BeginSequential(const std::vector<std::string>& input_files, mapFun
   int nReduce = 5;
   for (int i = 0; i < n_files; i++)
   {
-    doMap("master", input_files[i], i, 4, mapf);
+    doMap("master", input_files[i], i, nReduce, mapf);
   }
 
   for (int i = 0; i < nReduce; i++)
@@ -79,7 +84,7 @@ void Master::BeginDistributed(const std::vector<std::string>& input_files, mapFu
 {
   auto n_files = input_files.size();
   int nReduce = 5;
-  auto* s = GetScheduler(std::thread::hardware_concurrency());
+  auto* s = MapReduce::GetScheduler();
   std::vector<std::shared_future<void>> waiters;
   for (int i = 0; i < n_files; i++)
   {
@@ -97,6 +102,194 @@ void Master::BeginDistributed(const std::vector<std::string>& input_files, mapFu
   for (auto& f : waiters)
   {
     f.wait();
+  }
+}
+
+void Master::BeginRPCDistributed(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF)
+{
+  nMap = 0;
+  nReduce = 10;
+  auto* s = MapReduce::GetScheduler();
+  size_t i = 0;
+  for (const auto& files : input_files)
+  {
+    ClientContext ctx;
+    EmptyMessage empty;
+    JobMessage jb;
+    jb.add_input(files);
+    jb.set_nmap(i);
+    jb.set_nreduce(nReduce);
+    jb.set_phase(JobMessage::Phase::JobMessage_Phase_MAP);
+    // Find available worker
+
+    WorkerHandle wrker;
+    while (true)
+    {
+      if (!workers_.try_pop(wrker))
+      {
+        continue;
+      }
+      auto status = (*wrker)->Work(&ctx, jb, &empty);
+      if (status.ok())
+      {
+        ++i;
+        break;
+      }
+      else
+      {
+        workers_.push(wrker);
+        std::cout << "Error: " << status.error_code() << " " << status.error_message() << std::endl;
+      }
+    }
+     
+    
+  }
+  // Reference wrapper need due std::atomic is non-copy-non-move
+  // Schedule() removes all reference types in the argument tuple.
+  auto wait_map_phase = s->Schedule([](std::reference_wrapper<std::atomic_size_t> nmap, size_t expected) {
+    while (nmap.get() != expected);
+  }, std::ref(nMap), input_files.size());
+
+  wait_map_phase.wait();
+  nMap = 0;
+  size_t expected = nReduce;
+  JobMessage jb;
+
+  jb.set_nmap(input_files.size());
+  jb.set_phase(JobMessage::Phase::JobMessage_Phase_REDUCE);
+  for (size_t i = 0; i < nReduce; i++)
+  {
+    ClientContext ctx;
+    EmptyMessage empty;
+    jb.set_nreduce(i);
+
+    WorkerHandle wrker;
+    while (true)
+    {
+      if (!workers_.try_pop(wrker))
+      {
+        continue;
+      }
+      auto status = (*wrker)->Work(&ctx, jb, &empty);
+      if (status.ok())
+      {
+        // TODO
+        break;
+      }
+      else
+      {
+        workers_.push(wrker);
+        std::cout << "Error: " << status.error_code() << " " << status.error_message() << std::endl;
+      }
+    }
+
+   
+  }
+
+  auto wait_reduce_phase = s->Schedule([](std::reference_wrapper<std::atomic_size_t> nmap, size_t expected) {
+    while (nmap.get() != expected);
+    }, std::ref(nMap), expected);
+
+  wait_reduce_phase.wait();
+}
+
+std::shared_future<void> Master::StartRPCs(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF)
+{
+  size_t len = input_files.size();
+  WCHAR cmdline[128];
+  int port = 5050;
+  int worker_port = port + 1;
+  LPCWSTR processName = L"B:\\OpenSource\\luciolas\\c++\\MapReduce\\Debug\\MapReduceWorker.exe";
+  for (size_t i = 0; i < len; i++)
+  {
+    ZeroMemory(cmdline, sizeof(cmdline));
+    swprintf_s(cmdline, L"%s %d %d %d","MapReduceWorker.exe", port, worker_port++, i);
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof(si));
+    ZeroMemory(&pi, sizeof(pi));
+    si.cb = sizeof(si);
+
+    if (!CreateProcess(processName,
+      cmdline,
+      NULL,
+      NULL,
+      false,
+      0,
+      NULL,
+      NULL,
+      &si,
+      &pi))
+    {
+      printf("Failed to open process (%d)", GetLastError());
+      continue;
+    }
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+  }
+  auto* s = MapReduce::GetScheduler();
+  auto wait_reduce_phase = s->Schedule([](std::reference_wrapper<std::atomic_size_t> nmap, size_t expected) {
+    while (nmap.get() != expected);
+    }, std::ref(nMap), len);
+
+  return wait_reduce_phase;
+}
+
+void Master::StopAllRPCs()
+{
+  while (!workers_.empty())
+  {
+    WorkerHandle wrker;
+    workers_.try_pop(wrker);
+    ClientContext ctx;
+    EmptyMessage emp_msg;
+    EmptyMessage reply;
+    auto status = (*wrker)->Shutdown(&ctx, emp_msg, &reply);
+
+    if (status.ok())
+    {
+      std::cout << "Worker shut down" << std::endl;
+    }
+    else
+    {
+      std::cout << "Error? " << status.error_code() << " " << status.error_message() << std::endl;
+    }
+  }
+}
+
+Status Master::ReportStatus(ServerContext* ctx, const JobStatus* req, EmptyMessage* reply)
+{
+  auto ok = JobStatus::Status::JobStatus_Status_IDLE | JobStatus::Status::JobStatus_Status_DONE;
+  if (req->status() | ok)
+  {
+    workers_.push(NewHandle("localhost:" + std::to_string(req->id())));
+    ++nMap;
+    std::cout << "From worker " << "localhost:" + std::to_string(req->id()) << std::endl;
+  }
+  return Status::OK;
+}
+
+void Master::Init()
+{
+
+  grpc::EnableDefaultHealthCheckService(true);
+  grpc::reflection::InitProtoReflectionServerBuilderPlugin();
+  ServerBuilder sb;
+  int port = 0;
+  sb.AddListeningPort("localhost:5050", grpc::InsecureServerCredentials(), &port);
+  sb.RegisterService(this);
+
+  server_ = sb.BuildAndStart();
+  //std::unique_ptr<Server> server(sb.BuildAndStart());
+
+  std::cout << "Listening to: " << port << std::endl;
+}
+
+void Master::Start()
+{
+  if (server_)
+  {
+    server_->Wait();
   }
 }
 

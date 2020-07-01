@@ -1,15 +1,15 @@
 #include "pch.h"
 #include "CppUnitTest.h"
 #include "../MapReduce/MapReduce/master.h"
-#include "../MapReduce/MapReduce_Customs/wc.h"
-#include "../MapReduce_Customs/ii.h"
-#include "JobScheduler.h"
+#include <MapReduce_Customs/wc.h>
+#include <common.h>
+#include <MapReduce_Customs/ii.h>
+#include <Scheduler/JobScheduler.h>
 #include <vector>
 #include <future>
 #include <filesystem>
 
 namespace fs = std::filesystem;
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace MapReduceTests
@@ -51,11 +51,11 @@ namespace MapReduceTests
 			
 			int mapTask = 1;
 			int nreduce = std::thread::hardware_concurrency();
-			Scheduler* s = GetScheduler(nreduce);
+			::MapReduce::Scheduler* s = ::MapReduce::GetScheduler(nreduce);
 			std::vector<std::shared_future<void>> mappackages;
 			for (int i = 0; i < mapTask; i++)
 			{
-				auto mappackage = MakeFnPackage(&Master::doMap, m, "master", "pg-dorian_gray.txt", i, nreduce, mapF);
+				auto mappackage = ::MapReduce::MakeFnPackage(&Master::doMap, m, "master", "pg-dorian_gray.txt", i, nreduce, mapF);
 				s->Schedule(mappackage.pack);
 				mappackages.push_back(mappackage.prom);
 			}
@@ -66,7 +66,7 @@ namespace MapReduceTests
 			mappackages.clear();
 			for (int i = 0; i < nreduce; i++)
 			{
-				auto reducepackage = MakeFnPackage(&Master::doReduce, m, "master", mapTask, i, reduceF);
+				auto reducepackage = ::MapReduce::MakeFnPackage(&Master::doReduce, m, "master", mapTask, i, reduceF);
 				s->Schedule(reducepackage.pack);
 				mappackages.push_back(reducepackage.prom);
 			}
@@ -77,13 +77,27 @@ namespace MapReduceTests
 			mappackages.clear();
 		}
 
+		TEST_METHOD(iiMapReduceSeq)
+		{
+			Master* m = new Master;
+			std::vector<std::string> input_files{};
+			auto curr_path = fs::current_path();
+			for (auto& entry : fs::directory_iterator(curr_path))
+			{
+				if (entry.path().extension() == ".txt")
+				{
+					input_files.push_back(entry.path().filename().string());
+				}
+			}
+			m->BeginSequential(input_files, iimapF, iireduceF);
+		}
 		TEST_METHOD(iiMapReduceMT)
 		{
 			Master* m = new Master;
 
 			int mapTask = 1;
 			int nreduce = std::thread::hardware_concurrency();
-			Scheduler* s = GetScheduler(nreduce);
+			::MapReduce::Scheduler* s = ::MapReduce::GetScheduler(nreduce);
 			std::vector<std::shared_future<void>> mappackages;
 			for (int i = 0; i < mapTask; i++)
 			{
@@ -121,6 +135,64 @@ namespace MapReduceTests
 				}
 			}
 			m->BeginDistributed(input_files, iimapF, iireduceF);
+		}
+
+		TEST_METHOD(MapReduce_GRPCMasterWork)
+		{
+			auto* s = ::MapReduce::GetScheduler();
+			int max_files = 10;
+			Master m;
+			std::vector<std::string> input_files{};
+			auto curr_path = fs::current_path();
+			int i = 0;
+			for (auto& entry : fs::directory_iterator(curr_path))
+			{
+				if (i >= max_files)
+				{
+					break;
+				}
+				if (entry.path().extension() == ".txt")
+				{
+					input_files.push_back(entry.path().filename().string());
+					++i;
+				}
+			}
+			std::cout << "Files: " << i << std::endl;
+			m.Init();
+			s->Schedule(&Master::Start, &m);
+			auto start_wait = m.StartRPCs(input_files, iimapF, iireduceF);
+			// Wait workers to start up
+			start_wait.wait();
+			m.BeginRPCDistributed(input_files, iimapF, iireduceF);
+			m.StopAllRPCs();
+		}
+
+		TEST_METHOD(MapReduce_GRPCMasterShutdown)
+		{
+			auto* s = ::MapReduce::GetScheduler();
+			int max_files = 4;
+			Master m;
+			std::vector<std::string> input_files{};
+			auto curr_path = fs::current_path();
+			int i = 0;
+			for (auto& entry : fs::directory_iterator(curr_path))
+			{
+				if (i >= max_files)
+				{
+					break;
+				}
+				if (entry.path().extension() == ".txt")
+				{
+					input_files.push_back(entry.path().filename().string());
+					++i;
+				}
+			}
+			std::cout << "Files: " << i << std::endl;
+			m.Init();
+			s->Schedule(&Master::Start, &m);
+			auto start_wait = m.StartRPCs(input_files, iimapF, iireduceF);
+			start_wait.wait();
+			m.StopAllRPCs();
 		}
 	};
 

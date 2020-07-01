@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package mapreduce_master;
+
+import "mapreduce_common.proto";
+
+service MapReduceMaster {
+  rpc ReportStatus (JobStatus) returns (mapreduce_common.EmptyMessage) {}
+}
+
+
+message JobStatus {
+  enum Status {
+    IDLE = 0;
+    WORKING = 1;
+    DONE = 2;
+    ERR =4;
+  }
+  Status status = 1;
+  int32 ID = 2;
+}
+

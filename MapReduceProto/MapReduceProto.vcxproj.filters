@@ -15,24 +15,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="mapreduce_common.grpc.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MapReduce\master.cpp">
+    <ClCompile Include="mapreduce_common.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WorkerHandle\worker_handle.cpp">
+    <ClCompile Include="mapreducemaster.grpc.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapreducemaster.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapreduceworker.grpc.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mapreduceworker.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MapReduce\master.h">
+    <ClInclude Include="mapreduce_common.grpc.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="common.h">
+    <ClInclude Include="mapreduce_common.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WorkerHandle\worker_handle.h">
+    <ClInclude Include="mapreducemaster.grpc.pb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapreducemaster.pb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapreduceworker.grpc.pb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mapreduceworker.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
