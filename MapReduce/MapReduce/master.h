@@ -17,17 +17,23 @@
 #include <bitset>
 #include <atomic>
 #include <future>
+#include <concurrent_unordered_map.h>
+#include "JobPackage.h"
 
 #define WORKER_START_PORT 5051
 #define MAX_WORKERS 512
+#define DEFAULT_REDUCE 5
+#define MAP_PER_WORKER 1
+#define REDUCE_PER_WORKER 1
 
 using grpc::Channel;
 using mapreduce_master::MapReduceMaster;
 using mapreduce_worker::MapReduceWorker;
+using grpc::ServerReader;
 using grpc::Status;
 using grpc::ServerContext;
 using mapreduce_common::EmptyMessage;
-using mapreduce_worker::JobMessage;
+using mapreduce_common::JobMessage;
 using mapreduce_master::JobStatus;
 using json = nlohmann::json;
 using grpc::Server;
@@ -48,40 +54,64 @@ class Master final : public MapReduceMaster::Service
   mapFunc mapFunction;
   reduceFunc reduceFunction;
 
+  concurrent_unordered_map<size_t, JobPackage*> job_list_;
+  concurrent_unordered_map<size_t, std::stringstream> chunk_cache_;
   std::unique_ptr<Server> server_;
+  concurrent_unordered_map<size_t, WorkerHandle> worker_list_;
   concurrent_queue<WorkerHandle> workers_;
+  concurrent_queue<JobPackage*> job_queue_;
 
   Phase current;
-  
+  void DownloadFiles();
 
   // common map
 
   // common reduce
+  bool _try_work(const JobMessage& job, std::atomic_bool& stop_signal);
+  void _poll_jobs(std::atomic_bool& stop_signal);
 public:
-  
-  
-  std::string GenerateMapName(const std::string& jobName, int mapTaskN, int nReduce);
-  void doMap(const std::string& jobName, const std::string& file,int mapTaskN, int nReduce, mapFunc mapf);
-  std::string GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce);
-  void doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef);
-
+  enum class Mode
+  {
+    SEQ,
+    MT,
+    DIST,
+  };
+  // deprecated
+  void doMap(const std::string& jobName, const std::string& file, int mapTaskN, int nReduce, mapFunc mapf);
+  void doReduce(const std::string& jobName, const std::string& nextJobName, int mapTaskN, int nReduce, reduceFunc reducef);
+  void doMerge(const std::string& jobname, int nMapTask, int nReduce);
   void BeginSequential(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF);
   void BeginDistributed(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF);
   void BeginRPCDistributed(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF);
-  std::shared_future<void> StartRPCs(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF);
+  // deprecated
+  std::string GenerateMapName(const std::string& jobName, int mapTaskN, int nReduce);
+  std::string GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce);
+  
   void StopAllRPCs();
+  void StartRPCs(size_t nworkers);
 
-  Status ReportStatus(ServerContext* ctx, const JobStatus* reply, EmptyMessage* req );
+  HANDLE StartGateway();
 
   void AddAsMap(const std::string& path);
   void AddAsReduce(const std::string& path);
 
   void Init();
-  void Start();
+  void Start(Mode mode);
 
   concurrent_queue<WorkerHandle>& GetWorkers() { return workers_; }
 
   const concurrent_queue<WorkerHandle>& GetWorkers() const { return workers_; }
 
-  
+  Status ReportStatus(ServerContext* ctx, const JobStatus* req, EmptyMessage* reply);
+  Status Job(ServerContext* ctx, const JobMessage* req, JobStatus* reply);
+  Status GetStatus(ServerContext* ctx, const JobStatus* req, JobStatus* reply);
+  Status StreamFile(ServerContext* ctx, const mapreduce_common::Chunk* req, JobStatus* reply);
+  Status RequestStreamFile(ServerContext* context, const EmptyMessage* request, JobStatus* response);
 };
+
+
+static Master& GetMaster() 
+{
+  static Master m{};
+  return m;
+}

@@ -1,14 +1,45 @@
 syntax = "proto3";
-
+option go_package = ".;mapreduce_master";
 package mapreduce_master;
 
 import "mapreduce_common.proto";
+import "google/api/annotations.proto";
 
 service MapReduceMaster {
-  rpc ReportStatus (JobStatus) returns (mapreduce_common.EmptyMessage) {}
+  rpc ReportStatus (JobStatus) returns (mapreduce_common.EmptyMessage) {
+    option (google.api.http) = {
+        post : "/v1/mapreduce/report_status"
+        body : "*"
+    };
+  }
+
+  rpc Job(mapreduce_common.JobMessage) returns (JobStatus) {
+    option (google.api.http) = {
+        post: "/v1/mapreduce/job"
+        body: "*"
+    };
+  }
+
+  rpc GetStatus(JobStatus) returns (JobStatus) {
+    option (google.api.http) = {
+      get : "/v1/mapreduce/job"
+    };
+  }
+
+  rpc RequestStreamFile(mapreduce_common.EmptyMessage) returns(JobStatus) {
+    option (google.api.http) = {
+      post : "/v1/mapreduce/upload"
+      body : "*"
+    };
+  }
+
+  rpc StreamFile (mapreduce_common.Chunk) returns(JobStatus)  {
+    option (google.api.http) = {
+      post : "/v1/mapreduce/upload/{upload_id}"
+      body : "*"
+    };
+  }
 }
-
-
 message JobStatus {
   enum Status {
     IDLE = 0;
@@ -17,6 +48,7 @@ message JobStatus {
     ERR =4;
   }
   Status status = 1;
-  int32 ID = 2;
+  uint32 id = 2;
+  uint32 job_id = 3;
 }
 

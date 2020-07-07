@@ -29,7 +29,7 @@ namespace MapReduceTests
 			delete m;
 		}
 
-		TEST_METHOD(MapReduceResult)
+		TEST_METHOD(MapReduceResultWC)
 		{
 			Master* m = new Master;
 			int mapTask = 1;
@@ -40,8 +40,28 @@ namespace MapReduceTests
 			}
 			for (int i = 0; i < nreduce; i++)
 			{
-				m->doReduce("master", mapTask, i, reduceF);
+				m->doReduce("master","merge" ,mapTask, i, reduceF);
 			}
+
+			m->doMerge("merge", mapTask, nreduce);
+			delete m;
+		}
+
+		TEST_METHOD(MapReduceResultii)
+		{
+			Master* m = new Master;
+			int mapTask = 1;
+			int nreduce = 5;
+			for (int i = 0; i < mapTask; i++)
+			{
+				m->doMap("master", "pg-dorian_gray.txt", i, nreduce, iimapF);
+			}
+			for (int i = 0; i < nreduce; i++)
+			{
+				m->doReduce("master", "merge", mapTask, i, iireduceF);
+			}
+
+			m->doMerge("merge", mapTask, nreduce);
 			delete m;
 		}
 
@@ -66,7 +86,7 @@ namespace MapReduceTests
 			mappackages.clear();
 			for (int i = 0; i < nreduce; i++)
 			{
-				auto reducepackage = ::MapReduce::MakeFnPackage(&Master::doReduce, m, "master", mapTask, i, reduceF);
+				auto reducepackage = ::MapReduce::MakeFnPackage(&Master::doReduce, m, "master", "merge", mapTask, i, reduceF);
 				s->Schedule(reducepackage.pack);
 				mappackages.push_back(reducepackage.prom);
 			}
@@ -111,7 +131,7 @@ namespace MapReduceTests
 			mappackages.clear();
 			for (int i = 0; i < nreduce; i++)
 			{
-				auto result = s->Schedule(&Master::doReduce, m, "master", mapTask, i, iireduceF);
+				auto result = s->Schedule(&Master::doReduce, m, "master","merge", mapTask, i, iireduceF);
 				mappackages.push_back(result);
 			}
 			for (auto& fut : mappackages)
@@ -159,8 +179,8 @@ namespace MapReduceTests
 			}
 			std::cout << "Files: " << i << std::endl;
 			m.Init();
-			s->Schedule(&Master::Start, &m);
-			auto start_wait = m.StartRPCs(input_files, iimapF, iireduceF);
+			s->Schedule(&Master::Start, &m, Master::Mode::DIST);
+			auto start_wait = s->Schedule(&Master::StartRPCs, &m, input_files.size());
 			// Wait workers to start up
 			start_wait.wait();
 			m.BeginRPCDistributed(input_files, iimapF, iireduceF);
@@ -189,8 +209,8 @@ namespace MapReduceTests
 			}
 			std::cout << "Files: " << i << std::endl;
 			m.Init();
-			s->Schedule(&Master::Start, &m);
-			auto start_wait = m.StartRPCs(input_files, iimapF, iireduceF);
+			s->Schedule(&Master::Start, &m, Master::Mode::DIST);
+			auto start_wait = s->Schedule(&Master::StartRPCs, &m, input_files.size());
 			start_wait.wait();
 			m.StopAllRPCs();
 		}

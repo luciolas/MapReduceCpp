@@ -71,12 +71,18 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>MapReduceProto.dir\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>MapReduceProto.dir\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -87,6 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)MapReduceProto;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,6 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)MapReduceProto;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +146,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="google\api\annotations.grpc.pb.cc" />
+    <ClCompile Include="google\api\annotations.pb.cc" />
+    <ClCompile Include="google\api\http.grpc.pb.cc" />
+    <ClCompile Include="google\api\http.pb.cc" />
+    <ClCompile Include="google\api\httpbody.grpc.pb.cc" />
+    <ClCompile Include="google\api\httpbody.pb.cc" />
     <ClCompile Include="mapreducemaster.grpc.pb.cc" />
     <ClCompile Include="mapreducemaster.pb.cc" />
     <ClCompile Include="mapreduceworker.grpc.pb.cc" />
@@ -146,6 +160,12 @@
     <ClCompile Include="mapreduce_common.pb.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="google\api\annotations.grpc.pb.h" />
+    <ClInclude Include="google\api\annotations.pb.h" />
+    <ClInclude Include="google\api\http.grpc.pb.h" />
+    <ClInclude Include="google\api\http.pb.h" />
+    <ClInclude Include="google\api\httpbody.grpc.pb.h" />
+    <ClInclude Include="google\api\httpbody.pb.h" />
     <ClInclude Include="mapreducemaster.grpc.pb.h" />
     <ClInclude Include="mapreducemaster.pb.h" />
     <ClInclude Include="mapreduceworker.grpc.pb.h" />

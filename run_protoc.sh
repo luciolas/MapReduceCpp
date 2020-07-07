@@ -1,7 +1,13 @@
 #!/bin/sh
 
+# OPTIONAL Comment if not needed
 export PATH="B:\OpenSource\vcpkg\packages\protobuf_x64-windows\tools\protobuf:$PATH"
-DEST=MapReduceProto/
+GOOGLE_PROTO_PATH="B:\OpenSource\vcpkg\packages\protobuf_x64-windows\include"
+# OPTIONAL 
+
+DEST=MapReduceProto
+GW_PATH=$DEST/gw/
+GO_GW_PATH="grpc_json_gateway\gw\mapreduce_master"
 FROM=.
 echo "Begin running protoc recursively"
 COUNT=0
@@ -21,14 +27,21 @@ walk_dir () {
 }
 
 walk_dir "$FROM"
+mkdir -p $GW_PATH
 
 for i in "${PROTO_PATHS[@]}"
 do 
     echo "$i"
-    protoc -I ./Common/proto --grpc_out=$DEST \
+    protoc -I ./Common/proto --proto_path=$GOOGLE_PROTO_PATH  --grpc_out=$DEST/ \
         --plugin=protoc-gen-grpc=./Common/proto/grpc_cpp_plugin.exe $i
 
-    protoc -I ./Common/proto --cpp_out=$DEST \
+    protoc -I ./Common/proto  --proto_path=$GOOGLE_PROTO_PATH  --cpp_out=$DEST/ \
         $i
+
+    protoc -I ./Common/proto --proto_path=$GOOGLE_PROTO_PATH  --grpc-gateway_out=logtostderr=true,paths=source_relative:$GW_PATH \
+        $i
+
+    protoc -I ./Common/proto  --proto_path=$GOOGLE_PROTO_PATH  --go_out=plugins=grpc,paths=source_relative:$GO_GW_PATH \
+    $i
 done
 

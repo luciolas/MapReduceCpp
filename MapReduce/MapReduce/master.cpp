@@ -2,14 +2,41 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
+
 #include <functional>
 #include <Scheduler/JobScheduler.h>
 #include <Windows.h>
 #include <tchar.h>
+#include <curl/curl.h>
+#include <random>
+#include <string>
+#include <filesystem>
 
 using grpc::ServerBuilder;
 using grpc::ClientContext;
 using MapReduce::Scheduler;
+
+namespace fs = std::filesystem;
+
+// See Stackoverflow
+// https://stackoverflow.com/questions/47977829/generate-a-random-string-in-c11/47979867
+std::string random_string()
+{
+  std::string ALPHA_NUMERIC("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+  std::random_device rd;
+  std::mt19937 generator(rd());
+
+  std::shuffle(ALPHA_NUMERIC.begin(), ALPHA_NUMERIC.end(), generator);
+
+  return ALPHA_NUMERIC.substr(0, 16);    // assumes 32 < number of characters in str         
+}
+
+size_t random_int()
+{
+  std::random_device rd;
+  std::mt19937 generator(rd());
+  return generator();
+}
 
 size_t ihash(const std::string& s)
 {
@@ -17,7 +44,7 @@ size_t ihash(const std::string& s)
   return hasher(s );
 }
 
-void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef)
+void Master::doReduce(const std::string& jobName, const std::string& nextJobName, int mapTaskN, int nReduce, reduceFunc reducef)
 {
   std::unordered_map < std::string, std::vector<std::string>> key_val;
   for (int i = 0; i < mapTaskN; i++)
@@ -51,7 +78,7 @@ void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, red
         }
       }
       f.close();
-      auto outputname = GenerateReduceName("second", mapTaskN, nReduce);
+      auto outputname = GenerateReduceName(nextJobName, mapTaskN, nReduce);
       std::ofstream of{ outputname, std::ofstream::out };
       for (const auto& kv : key_val)
       {
@@ -65,6 +92,52 @@ void Master::doReduce(const std::string& jobName, int mapTaskN, int nReduce, red
   
 }
 
+void Master::doMerge(const std::string& jobname, int nMapTask, int nReduce)
+{
+  std::map<std::string, std::string, std::less<std::string>> key_val;
+  
+  for (int i = 0; i < nReduce; i++)
+  {
+    auto file_name = GenerateReduceName(jobname, nMapTask, i);
+    std::ifstream ifs;
+    ifs.open(file_name, std::ifstream::in);
+    if (ifs.is_open())
+    {
+      std::string buf{};
+      DEFER([&]() { ifs.close(); });
+      while (std::getline(ifs, buf))
+      {
+        json j;
+        try
+        {
+          j = json::parse(buf);
+        }
+        catch (const std::exception& e)
+        {
+          continue;
+        }
+        auto kv = j.get<KeyValue>();
+        key_val.emplace(kv.Key, kv.Value);
+      }
+
+      ifs.close();
+    }
+    else
+    {
+      // log file unabvle to open
+    }
+  }
+  auto outputname = GenerateReduceName("mergedfile",nMapTask, nReduce);
+  std::ofstream of{ outputname, std::ofstream::out };
+  DEFER([&]() { of.close(); });
+  for (const auto& kv : key_val)
+  {
+    auto newkv = KeyValue{ kv.first,  kv.second };
+    json mj = newkv;
+    of << mj << std::endl;
+  }
+}
+
 void Master::BeginSequential(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF)
 {
   auto n_files = input_files.size();
@@ -76,8 +149,10 @@ void Master::BeginSequential(const std::vector<std::string>& input_files, mapFun
 
   for (int i = 0; i < nReduce; i++)
   {
-    doReduce("master", n_files, i, reduceF);
+    doReduce("master","merge", n_files, i, reduceF);
   }
+
+  doMerge("merge", n_files, nReduce);
 }
 
 void Master::BeginDistributed(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF)
@@ -97,12 +172,14 @@ void Master::BeginDistributed(const std::vector<std::string>& input_files, mapFu
   waiters.clear();
   for (int i = 0; i < nReduce; i++)
   {
-    waiters.push_back(s->Schedule(&Master::doReduce, this, "master", n_files, i,reduceF));
+    waiters.push_back(s->Schedule(&Master::doReduce, this, "master","merge", n_files, i,reduceF));
   }
   for (auto& f : waiters)
   {
     f.wait();
   }
+
+  doMerge("merge", n_files, nReduce);
 }
 
 void Master::BeginRPCDistributed(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF)
@@ -119,6 +196,7 @@ void Master::BeginRPCDistributed(const std::vector<std::string>& input_files, ma
     jb.add_input(files);
     jb.set_nmap(i);
     jb.set_nreduce(nReduce);
+    jb.set_jobname("master");
     jb.set_phase(JobMessage::Phase::JobMessage_Phase_MAP);
     // Find available worker
 
@@ -156,6 +234,7 @@ void Master::BeginRPCDistributed(const std::vector<std::string>& input_files, ma
   JobMessage jb;
 
   jb.set_nmap(input_files.size());
+  jb.set_jobname("master");
   jb.set_phase(JobMessage::Phase::JobMessage_Phase_REDUCE);
   for (size_t i = 0; i < nReduce; i++)
   {
@@ -182,24 +261,26 @@ void Master::BeginRPCDistributed(const std::vector<std::string>& input_files, ma
         std::cout << "Error: " << status.error_code() << " " << status.error_message() << std::endl;
       }
     }
-
-   
   }
 
   auto wait_reduce_phase = s->Schedule([](std::reference_wrapper<std::atomic_size_t> nmap, size_t expected) {
+    // TODO: timeout
     while (nmap.get() != expected);
     }, std::ref(nMap), expected);
 
   wait_reduce_phase.wait();
+
+  doMerge("merge", input_files.size(), nReduce);
+  
 }
 
-std::shared_future<void> Master::StartRPCs(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF)
+void Master::StartRPCs(size_t nworkers)
 {
-  size_t len = input_files.size();
+  size_t len = nworkers;
   WCHAR cmdline[128];
   int port = 5050;
   int worker_port = port + 1;
-  LPCWSTR processName = L"B:\\OpenSource\\luciolas\\c++\\MapReduce\\Debug\\MapReduceWorker.exe";
+  LPCWSTR processName = L"MapReduceWorker.exe";
   for (size_t i = 0; i < len; i++)
   {
     ZeroMemory(cmdline, sizeof(cmdline));
@@ -227,12 +308,33 @@ std::shared_future<void> Master::StartRPCs(const std::vector<std::string>& input
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
   }
-  auto* s = MapReduce::GetScheduler();
-  auto wait_reduce_phase = s->Schedule([](std::reference_wrapper<std::atomic_size_t> nmap, size_t expected) {
-    while (nmap.get() != expected);
-    }, std::ref(nMap), len);
+}
 
-  return wait_reduce_phase;
+HANDLE Master::StartGateway()
+{
+  LPCWSTR processName = L"../grpc_json_gateway/cmd/cmd.exe";
+  STARTUPINFO si;
+  PROCESS_INFORMATION pi;
+  ZeroMemory(&si, sizeof(si));
+  ZeroMemory(&pi, sizeof(pi));
+  si.cb = sizeof(si);
+
+  if (!CreateProcess(processName,
+    NULL,
+    NULL,
+    NULL,
+    false,
+    0,
+    NULL,
+    NULL,
+    &si,
+    &pi))
+  {
+    printf("Failed to open process (%d)", GetLastError());
+  }
+  CloseHandle(pi.hThread);
+
+  return pi.hProcess;
 }
 
 void Master::StopAllRPCs()
@@ -259,13 +361,140 @@ void Master::StopAllRPCs()
 
 Status Master::ReportStatus(ServerContext* ctx, const JobStatus* req, EmptyMessage* reply)
 {
-  auto ok = JobStatus::Status::JobStatus_Status_IDLE | JobStatus::Status::JobStatus_Status_DONE;
-  if (req->status() | ok)
+  auto [handle, inserted] = worker_list_.insert({ req->id(), NewHandle("localhost:" + std::to_string(req->id())) });
+  auto wrk_handle = handle->second;
+  if (req->status() == JobStatus::Status::JobStatus_Status_IDLE)
   {
-    workers_.push(NewHandle("localhost:" + std::to_string(req->id())));
+    workers_.push(handle->second);
+    // TODO: remove nMap, not needed.
     ++nMap;
     std::cout << "From worker " << "localhost:" + std::to_string(req->id()) << std::endl;
   }
+  else if (req->status() ==  JobStatus::Status::JobStatus_Status_DONE)
+  {
+    // update jobs
+    auto jp = job_list_[req->job_id()];
+    if (jp->Done() && jp->NextPhase() != JobPackage::Phase::DONE)
+    {
+      job_queue_.push(jp);
+    }
+    workers_.push(wrk_handle);
+  } 
+
+  return Status::OK;
+}
+
+
+size_t write_file_bytes(char* buffer, size_t size, size_t nmemb, std::stringstream* userp)
+{
+  std::stringstream* my_buffer = userp;
+  //std::cout << "Buffer: " << *buffer << std::endl;
+  my_buffer->write(buffer, size * nmemb);
+  return size * nmemb;
+}
+
+
+Status Master::Job(ServerContext* ctx, const JobMessage* req, JobStatus* reply)
+{
+  auto files = req->input();
+  if (files.size() == 0)
+  {
+    return Status{ grpc::StatusCode::INVALID_ARGUMENT, "no input files" };
+  }
+  const auto job_id = random_int();
+
+  std::stringstream dir;
+  dir << job_id;
+
+  fs::create_directories(dir.str());
+
+  auto easyhandle = curl_easy_init();
+  std::vector < std::string > local_files{};
+  std::string file_prefix{ "file_" };
+  std::string file_ext{ ".mp" };
+  int i = 0;
+  curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, write_file_bytes);
+  curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, 1L);
+
+  for (const auto& file_location : files)
+  {
+    std::cout << "Job called: " << file_location << std::endl;
+    std::stringstream buffer;
+    
+    curl_easy_setopt(easyhandle, CURLOPT_URL, file_location.c_str());
+    curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &buffer);
+
+    auto ok = curl_easy_perform(easyhandle);
+    if (ok == CURLcode::CURLE_OK)
+    {
+      std::stringstream filename;
+      filename << dir.str() << "/" <<  file_prefix << i << file_ext;
+      std::ofstream ofs{ filename.str(), std::ofstream::out };
+      ofs << buffer.rdbuf();
+      ofs.close();
+      ++i;
+      local_files.push_back(filename.str());
+    }
+    else
+    {
+      std::cout << "Curl error: " << ok << std::endl;
+    }
+  }
+
+  curl_easy_cleanup(easyhandle);
+
+  auto* jp = new JobPackage{};
+  job_list_[job_id] = jp;
+  jp->files = std::move(local_files);
+  jp->id = job_id;
+  jp->nmap_completed.second = jp->files.size();
+  jp->nreduce_completed.second = DEFAULT_REDUCE;
+
+  job_queue_.push(jp);
+  return Status::OK;
+}
+
+Status Master::GetStatus(ServerContext* ctx, const JobStatus* req, JobStatus* reply)
+{
+  return Status::OK;
+}
+
+Status Master::StreamFile(ServerContext* ctx, const mapreduce_common::Chunk* req, JobStatus* reply)
+{
+  std::stringstream& ss = chunk_cache_[req->upload_id()];
+  auto size = req->chunk().size();
+  if (size == 0)
+  {
+    // Write file to filesystem
+    std::stringstream path;
+    path << req->upload_id();
+    fs::create_directories(path.str());
+    path << "/" << "file_0";
+    std::ofstream ofs{path.str(), std::ofstream::out};
+    ofs << ss.rdbuf();
+    ofs.close();
+
+    // TODO: Prevent further writing with the same upload_id
+    chunk_cache_[req->upload_id()] = std::stringstream{};
+  }
+  else if (size < (1 << 20))
+  {
+    // TODO: Parts ID/positional chunking
+    ss << req->chunk();
+  }
+  else
+  {
+    return Status{ grpc::StatusCode::RESOURCE_EXHAUSTED, std::string{"chunk over 1MB"} };
+  }
+
+  return Status::OK;
+}
+
+Status Master::RequestStreamFile(ServerContext* context, const EmptyMessage* request, JobStatus* response)
+{
+  const auto upload_id = random_int();
+  chunk_cache_[upload_id] = std::stringstream{};
+  response->set_id(upload_id);
   return Status::OK;
 }
 
@@ -285,12 +514,33 @@ void Master::Init()
   std::cout << "Listening to: " << port << std::endl;
 }
 
-void Master::Start()
+void Master::Start(Mode mode)
 {
-  if (server_)
+  auto* s = ::MapReduce::GetScheduler();
+  DEFER([&]() {
+    this->StopAllRPCs();
+    server_->Shutdown();
+    });
+  std::atomic_bool poller_stop_signal{ false };
+  auto grpc_server_wait = s->Schedule([&]()
+    {
+      if (server_)
+      {
+        server_->Wait();
+      }
+    });
+  // TODO: Config mode: MT, Seq, Dist
+  if (mode == Mode::DIST)
   {
-    server_->Wait();
+    StartRPCs(10);
   }
+  auto gw_handle = StartGateway();
+
+
+  DEFER([&]() { TerminateProcess(gw_handle, 0); });
+  auto poller_wait = s->Schedule(&Master::_poll_jobs, this, std::ref(poller_stop_signal));
+
+  grpc_server_wait.wait();
 }
 
 
@@ -346,6 +596,131 @@ void Master::doMap(const std::string& jobName,const std::string& file, int mapTa
   }
 }
 
+
+void Master::DownloadFiles()
+{
+  /*auto files = req->input();
+  auto easyhandle = curl_easy_init();
+  std::stringstream filename;
+  filename << "file_";
+  int i = 0;
+  curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, write_file_bytes);
+  curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, 1L);
+  for (const auto& file : files)
+  {
+    std::cout << "Job called: " << file << std::endl;
+    std::stringstream buffer;
+
+    curl_easy_setopt(easyhandle, CURLOPT_URL, file.c_str());
+    curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &buffer);
+
+    auto ok = curl_easy_perform(easyhandle);
+    if (ok == CURLcode::CURLE_OK)
+    {
+      filename << i;
+      std::ofstream ofs;
+      ofs.open(filename.str(), std::ofstream::out);
+      ofs << buffer.rdbuf();
+      ofs.close();
+      ++i;
+    }
+    else
+    {
+      std::cout << "Curl error: " << ok << std::endl;
+    }
+  }
+
+  curl_easy_cleanup(easyhandle);*/
+
+}
+
+bool Master::_try_work(const JobMessage& job, std::atomic_bool& stop_signal)
+{
+  ClientContext ctx;
+  EmptyMessage empty;
+  while (true)
+  {
+    if (stop_signal.load())
+    {
+      return true;
+    }
+    WorkerHandle wrker;
+    if (!workers_.try_pop(wrker))
+    {
+      continue;
+    }
+    auto status = (*wrker)->Work(&ctx, job, &empty);
+    if (status.ok())
+    {
+      return true;
+    }
+    else
+    {
+      workers_.push(wrker);
+      std::cout << "Error: " << status.error_code() << " " << status.error_message() << std::endl;
+    }
+  }
+  return false;
+}
+
+void Master::_poll_jobs(std::atomic_bool& stop_signal)
+{
+
+  while (true)
+  {
+    //poll jobs
+    if (stop_signal.load())
+    {
+      return;
+    }
+    JobPackage* jp;
+    if (!job_queue_.try_pop(jp))
+    {
+      continue;
+    }
+
+    JobMessage jb;
+    std::stringstream id;
+    jb.set_nmap(jp->files.size());
+    id << jp->id;
+    jb.set_jobname(id.str());
+    jb.set_phase((JobMessage::Phase)jp->phase);
+    jb.set_nreduce(DEFAULT_REDUCE);
+
+    if (jp->phase == JobPackage::Phase::MAP)
+    {
+      for (size_t i =0; i < jp->files.size(); ++i)
+      {
+        jb.add_input(jp->files[i]);
+        if (jb.input_size() % MAP_PER_WORKER == 0)
+        {
+          jb.set_nmap(i + 1 - MAP_PER_WORKER );
+          _try_work(jb, stop_signal);
+          jb.clear_input();
+        }
+      }
+      if (jb.input_size() > 0)
+      {
+        jb.set_nmap(jp->files.size() - jb.input_size());
+        _try_work(jb, stop_signal);
+      }
+    }
+    else if (jp->phase == JobPackage::Phase::REDUCE)
+    {
+      for (size_t i = 0; i < DEFAULT_REDUCE; i++)
+      {
+        jb.set_nreduce(i);
+        _try_work(jb, stop_signal);
+      }
+    }
+    else
+    {
+      _try_work(jb, stop_signal);
+    }
+  }
+
+  
+}
 
 std::string Master::GenerateMapName(const std::string& jobName, int mapTaskN, int nReduce)
 {

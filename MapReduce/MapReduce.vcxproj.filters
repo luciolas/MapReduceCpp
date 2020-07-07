@@ -35,5 +35,8 @@
     <ClInclude Include="WorkerHandle\worker_handle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MapReduce\JobPackage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

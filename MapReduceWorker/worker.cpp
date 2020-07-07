@@ -32,33 +32,52 @@ Status Worker::Work(ServerContext* serverCtx, const JobMessage* msg, EmptyMessag
   auto nmap = msg->nmap();
   auto nReduce = msg->nreduce();
   auto phase = msg->phase();
+  auto jobname = msg->jobname();
   auto* s =::MapReduce::GetScheduler();
   
+  std::ofstream work_log{ jobname + "/" + "work_log.txt", std::ofstream::app };
+  DEFER([&]() { work_log.close(); });
+  work_log << jobname << ", " << "phase: " << (size_t)phase << ", inputsize: " << msg->input_size() << std::endl;
   std::vector<std::shared_future<void>> res;
   if (phase == JobMessage::Phase::JobMessage_Phase_MAP)
   {
+    size_t i = nmap;
     for (const auto& input : msg->input())
     {
-      res.push_back(s->Schedule(&Worker::doMap, this, "master", input, nmap, nReduce, iimapF));
+      work_log << "input file: " << input << std::endl;
+      res.push_back(s->Schedule(&Worker::doMap, this, jobname, input, i, nReduce, iimapF));
+      ++i;
     }
   }
   else if (phase == JobMessage::Phase::JobMessage_Phase_REDUCE)
   {
-    res.push_back(s->Schedule(&Worker::doReduce, this, "master", nmap, nReduce, iireduceF));
+    res.push_back(s->Schedule(&Worker::doReduce, this, jobname, nmap, nReduce, iireduceF));
+  }
+  else if (phase == JobMessage::Phase::JobMessage_Phase_MERGE)
+  {
+    res.push_back(s->Schedule(&Worker::doMerge, this, jobname, nmap, nReduce));
+  }
+  else
+  {
+    return Status{ grpc::StatusCode::INVALID_ARGUMENT, "unknown phase" };
   }
 
-  s->Schedule([](Worker* worker, std::vector<std::shared_future<void>> r) {
+  s->Schedule([](Worker* worker, std::vector<std::shared_future<void>> r, std::string jobname) {
     for (auto& sp : r)
     {
       sp.wait();
     }
+    std::stringstream ss{ jobname };
+    size_t jobid = 0;
+    ss >> jobid;
     JobStatus j;
     j.set_status(JobStatus::Status::JobStatus_Status_DONE);
     j.set_id(worker->GetPort());
+    j.set_job_id(jobid);
     worker->SetIdle(true);
     
     worker->Report(j);
-    }, this, res);
+    }, this, res, jobname);
 
   SetIdle(false);
   return Status::OK;
@@ -67,11 +86,15 @@ Status Worker::Work(ServerContext* serverCtx, const JobMessage* msg, EmptyMessag
 void Worker::doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef)
 {
   std::unordered_map < std::string, std::vector<std::string>> key_val;
+  std::stringstream path{ jobName + "/"};
+  std::string log_path{ path.str() + "reduce_log.txt"};
+  std::ofstream log_os{ log_path, std::ofstream::out };
+  DEFER([&]() {log_os.close(); })
   for (int i = 0; i < mapTaskN; i++)
   {
     std::ifstream f;
     auto filename = GenerateReduceName(jobName, i, nReduce);
-    f.open(filename, std::ifstream::in);
+    f.open(path.str() + filename, std::ifstream::in);
     if (f.is_open())
     {
       std::string buffers;
@@ -98,8 +121,8 @@ void Worker::doReduce(const std::string& jobName, int mapTaskN, int nReduce, red
         }
       }
       f.close();
-      auto outputname = GenerateReduceName("second", mapTaskN, nReduce);
-      std::ofstream of{ outputname, std::ofstream::out };
+      auto outputname = GenerateMergeName(jobName, mapTaskN, nReduce);
+      std::ofstream of{ path.str() + outputname, std::ofstream::out };
       for (const auto& kv : key_val)
       {
         auto newkv = KeyValue{ kv.first,  reducef(kv.first, kv.second) };
@@ -108,17 +131,70 @@ void Worker::doReduce(const std::string& jobName, int mapTaskN, int nReduce, red
       }
       of.close();
     }
+    else
+    {
+      log_os << "unable to open file : " << path.str() + filename << std::endl;
+    }
   }
+}
 
+void Worker::doMerge(const std::string& jobname, int nMapTask, int nReduce)
+{
+  std::map<std::string, std::string, std::less<std::string>> key_val;
+  std::stringstream path{ jobname + "/" };
+  for (int i = 0; i < nReduce; i++)
+  {
+    auto file_name = GenerateMergeName(jobname, nMapTask, i);
+    std::ifstream ifs;
+    ifs.open(path.str() + file_name, std::ifstream::in);
+    if (ifs.is_open())
+    {
+      std::string buf{};
+      DEFER([&]() { ifs.close(); });
+      while (std::getline(ifs, buf))
+      {
+        json j;
+        try
+        {
+          j = json::parse(buf);
+        }
+        catch (const std::exception& e)
+        {
+          continue;
+        }
+        auto kv = j.get<KeyValue>();
+        key_val.emplace(kv.Key, kv.Value);
+      }
+
+    }
+    else
+    {
+      // log file unabvle to open
+    }
+  }
+  auto outputname = "output_file.result";
+  std::ofstream of{ path.str() +  outputname, std::ofstream::out };
+  for (const auto& kv : key_val)
+  {
+    auto newkv = KeyValue{ kv.first,  kv.second };
+    json mj = newkv;
+    of << mj << std::endl;
+  }
+  of.close();
 }
 
 void Worker::doMap(const std::string& jobName, const std::string& file, int mapTaskN, int nReduce, mapFunc mapf)
 {
+  // Assume directories are created
+  std::stringstream path{ jobName  + "/"  };
   // Read files
+  std::ofstream log{ path.str() + "map_log.txt", std::ofstream::out };
+  DEFER([&]() {log.close(); });
   std::ifstream f;
   f.open(file, std::ifstream::in);
   if (f.is_open())
   {
+    DEFER([&]() {f.close(); })
     f.seekg(0, f.end);
     int length = f.tellg();
     f.seekg(0, f.beg);
@@ -152,15 +228,21 @@ void Worker::doMap(const std::string& jobName, const std::string& file, int mapT
       }
 
     }
-
+    
     // Write files here
+    log << "output_encodes: " << output_encodes.size()<< ", " <<"kvsize: " << kv_result.size()<< std::endl;
     for (auto& kv : output_encodes)
     {
       auto output_name = GenerateReduceName(jobName, mapTaskN, kv.first);
-      std::ofstream of{ output_name, std::ofstream::out };
+
+      std::ofstream of{ path.str() + output_name, std::ofstream::out };
       of << kv.second.str() << std::endl;
       of.close();
     }
+  }
+  else
+  {
+    log << "Unable to open file" << std::endl;
   }
 }
 
@@ -168,6 +250,13 @@ std::string Worker::GenerateReduceName(const std::string& jobName, int mapTaskN,
 {
   std::stringstream ss;
   ss << jobName << "-" << "reduce-" << mapTaskN << "-" << nReduce;
+  return ss.str();;
+}
+
+std::string Worker::GenerateMergeName(const std::string& jobName, int mapTaskN, int nReduce)
+{
+  std::stringstream ss;
+  ss << jobName << "-" << "merge" << "-" << mapTaskN << "-" << nReduce;
   return ss.str();;
 }
 

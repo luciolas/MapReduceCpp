@@ -23,6 +23,10 @@ namespace mapreduce_master {
 
 static const char* MapReduceMaster_method_names[] = {
   "/mapreduce_master.MapReduceMaster/ReportStatus",
+  "/mapreduce_master.MapReduceMaster/Job",
+  "/mapreduce_master.MapReduceMaster/GetStatus",
+  "/mapreduce_master.MapReduceMaster/RequestStreamFile",
+  "/mapreduce_master.MapReduceMaster/StreamFile",
 };
 
 std::unique_ptr< MapReduceMaster::Stub> MapReduceMaster::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -33,6 +37,10 @@ std::unique_ptr< MapReduceMaster::Stub> MapReduceMaster::NewStub(const std::shar
 
 MapReduceMaster::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   : channel_(channel), rpcmethod_ReportStatus_(MapReduceMaster_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_Job_(MapReduceMaster_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetStatus_(MapReduceMaster_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_RequestStreamFile_(MapReduceMaster_method_names[3], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_StreamFile_(MapReduceMaster_method_names[4], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status MapReduceMaster::Stub::ReportStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::mapreduce_common::EmptyMessage* response) {
@@ -63,18 +71,178 @@ void MapReduceMaster::Stub::experimental_async::ReportStatus(::grpc::ClientConte
   return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_common::EmptyMessage>::Create(channel_.get(), cq, rpcmethod_ReportStatus_, context, request, false);
 }
 
+::grpc::Status MapReduceMaster::Stub::Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::mapreduce_master::JobStatus* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_Job_, context, request, response);
+}
+
+void MapReduceMaster::Stub::experimental_async::Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_Job_, context, request, response, std::move(f));
+}
+
+void MapReduceMaster::Stub::experimental_async::Job(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_Job_, context, request, response, std::move(f));
+}
+
+void MapReduceMaster::Stub::experimental_async::Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_Job_, context, request, response, reactor);
+}
+
+void MapReduceMaster::Stub::experimental_async::Job(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_Job_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* MapReduceMaster::Stub::AsyncJobRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_master::JobStatus>::Create(channel_.get(), cq, rpcmethod_Job_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* MapReduceMaster::Stub::PrepareAsyncJobRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_master::JobStatus>::Create(channel_.get(), cq, rpcmethod_Job_, context, request, false);
+}
+
+::grpc::Status MapReduceMaster::Stub::GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::mapreduce_master::JobStatus* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_GetStatus_, context, request, response);
+}
+
+void MapReduceMaster::Stub::experimental_async::GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_GetStatus_, context, request, response, std::move(f));
+}
+
+void MapReduceMaster::Stub::experimental_async::GetStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_GetStatus_, context, request, response, std::move(f));
+}
+
+void MapReduceMaster::Stub::experimental_async::GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_GetStatus_, context, request, response, reactor);
+}
+
+void MapReduceMaster::Stub::experimental_async::GetStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_GetStatus_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* MapReduceMaster::Stub::AsyncGetStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_master::JobStatus>::Create(channel_.get(), cq, rpcmethod_GetStatus_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* MapReduceMaster::Stub::PrepareAsyncGetStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_master::JobStatus>::Create(channel_.get(), cq, rpcmethod_GetStatus_, context, request, false);
+}
+
+::grpc::Status MapReduceMaster::Stub::RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::mapreduce_master::JobStatus* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_RequestStreamFile_, context, request, response);
+}
+
+void MapReduceMaster::Stub::experimental_async::RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_RequestStreamFile_, context, request, response, std::move(f));
+}
+
+void MapReduceMaster::Stub::experimental_async::RequestStreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_RequestStreamFile_, context, request, response, std::move(f));
+}
+
+void MapReduceMaster::Stub::experimental_async::RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_RequestStreamFile_, context, request, response, reactor);
+}
+
+void MapReduceMaster::Stub::experimental_async::RequestStreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_RequestStreamFile_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* MapReduceMaster::Stub::AsyncRequestStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_master::JobStatus>::Create(channel_.get(), cq, rpcmethod_RequestStreamFile_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* MapReduceMaster::Stub::PrepareAsyncRequestStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_master::JobStatus>::Create(channel_.get(), cq, rpcmethod_RequestStreamFile_, context, request, false);
+}
+
+::grpc::Status MapReduceMaster::Stub::StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::mapreduce_master::JobStatus* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_StreamFile_, context, request, response);
+}
+
+void MapReduceMaster::Stub::experimental_async::StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_StreamFile_, context, request, response, std::move(f));
+}
+
+void MapReduceMaster::Stub::experimental_async::StreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_StreamFile_, context, request, response, std::move(f));
+}
+
+void MapReduceMaster::Stub::experimental_async::StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_StreamFile_, context, request, response, reactor);
+}
+
+void MapReduceMaster::Stub::experimental_async::StreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_StreamFile_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* MapReduceMaster::Stub::AsyncStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_master::JobStatus>::Create(channel_.get(), cq, rpcmethod_StreamFile_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* MapReduceMaster::Stub::PrepareAsyncStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_master::JobStatus>::Create(channel_.get(), cq, rpcmethod_StreamFile_, context, request, false);
+}
+
 MapReduceMaster::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       MapReduceMaster_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< MapReduceMaster::Service, ::mapreduce_master::JobStatus, ::mapreduce_common::EmptyMessage>(
           std::mem_fn(&MapReduceMaster::Service::ReportStatus), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      MapReduceMaster_method_names[1],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< MapReduceMaster::Service, ::mapreduce_common::JobMessage, ::mapreduce_master::JobStatus>(
+          std::mem_fn(&MapReduceMaster::Service::Job), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      MapReduceMaster_method_names[2],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< MapReduceMaster::Service, ::mapreduce_master::JobStatus, ::mapreduce_master::JobStatus>(
+          std::mem_fn(&MapReduceMaster::Service::GetStatus), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      MapReduceMaster_method_names[3],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< MapReduceMaster::Service, ::mapreduce_common::EmptyMessage, ::mapreduce_master::JobStatus>(
+          std::mem_fn(&MapReduceMaster::Service::RequestStreamFile), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      MapReduceMaster_method_names[4],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< MapReduceMaster::Service, ::mapreduce_common::Chunk, ::mapreduce_master::JobStatus>(
+          std::mem_fn(&MapReduceMaster::Service::StreamFile), this)));
 }
 
 MapReduceMaster::Service::~Service() {
 }
 
 ::grpc::Status MapReduceMaster::Service::ReportStatus(::grpc::ServerContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_common::EmptyMessage* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status MapReduceMaster::Service::Job(::grpc::ServerContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status MapReduceMaster::Service::GetStatus(::grpc::ServerContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status MapReduceMaster::Service::RequestStreamFile(::grpc::ServerContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status MapReduceMaster::Service::StreamFile(::grpc::ServerContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response) {
   (void) context;
   (void) request;
   (void) response;

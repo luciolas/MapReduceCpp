@@ -37,11 +37,11 @@ MapReduceWorker::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& ch
   , rpcmethod_Shutdown_(MapReduceWorker_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
-::grpc::Status MapReduceWorker::Stub::Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::mapreduce_common::EmptyMessage* response) {
+::grpc::Status MapReduceWorker::Stub::Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::mapreduce_common::EmptyMessage* response) {
   return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_Work_, context, request, response);
 }
 
-void MapReduceWorker::Stub::experimental_async::Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response, std::function<void(::grpc::Status)> f) {
+void MapReduceWorker::Stub::experimental_async::Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response, std::function<void(::grpc::Status)> f) {
   ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_Work_, context, request, response, std::move(f));
 }
 
@@ -49,7 +49,7 @@ void MapReduceWorker::Stub::experimental_async::Work(::grpc::ClientContext* cont
   ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_Work_, context, request, response, std::move(f));
 }
 
-void MapReduceWorker::Stub::experimental_async::Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+void MapReduceWorker::Stub::experimental_async::Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
   ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_Work_, context, request, response, reactor);
 }
 
@@ -57,11 +57,11 @@ void MapReduceWorker::Stub::experimental_async::Work(::grpc::ClientContext* cont
   ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_Work_, context, request, response, reactor);
 }
 
-::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* MapReduceWorker::Stub::AsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* MapReduceWorker::Stub::AsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
   return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_common::EmptyMessage>::Create(channel_.get(), cq, rpcmethod_Work_, context, request, true);
 }
 
-::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* MapReduceWorker::Stub::PrepareAsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* MapReduceWorker::Stub::PrepareAsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
   return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::mapreduce_common::EmptyMessage>::Create(channel_.get(), cq, rpcmethod_Work_, context, request, false);
 }
 
@@ -97,7 +97,7 @@ MapReduceWorker::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       MapReduceWorker_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< MapReduceWorker::Service, ::mapreduce_worker::JobMessage, ::mapreduce_common::EmptyMessage>(
+      new ::grpc::internal::RpcMethodHandler< MapReduceWorker::Service, ::mapreduce_common::JobMessage, ::mapreduce_common::EmptyMessage>(
           std::mem_fn(&MapReduceWorker::Service::Work), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       MapReduceWorker_method_names[1],
@@ -109,7 +109,7 @@ MapReduceWorker::Service::Service() {
 MapReduceWorker::Service::~Service() {
 }
 
-::grpc::Status MapReduceWorker::Service::Work(::grpc::ServerContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response) {
+::grpc::Status MapReduceWorker::Service::Work(::grpc::ServerContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response) {
   (void) context;
   (void) request;
   (void) response;

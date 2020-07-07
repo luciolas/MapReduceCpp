@@ -46,6 +46,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_mapreducemaster_2eproto::offse
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::mapreduce_master::JobStatus, status_),
   PROTOBUF_FIELD_OFFSET(::mapreduce_master::JobStatus, id_),
+  PROTOBUF_FIELD_OFFSET(::mapreduce_master::JobStatus, job_id_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::mapreduce_master::JobStatus)},
@@ -57,15 +58,29 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_mapreducemaster_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\025mapreducemaster.proto\022\020mapreduce_maste"
-  "r\032\026mapreduce_common.proto\"\177\n\tJobStatus\0222"
-  "\n\006status\030\001 \001(\0162\".mapreduce_master.JobSta"
-  "tus.Status\022\n\n\002ID\030\002 \001(\005\"2\n\006Status\022\010\n\004IDLE"
-  "\020\000\022\013\n\007WORKING\020\001\022\010\n\004DONE\020\002\022\007\n\003ERR\020\0042`\n\017Ma"
-  "pReduceMaster\022M\n\014ReportStatus\022\033.mapreduc"
-  "e_master.JobStatus\032\036.mapreduce_common.Em"
-  "ptyMessage\"\000b\006proto3"
+  "r\032\026mapreduce_common.proto\032\034google/api/an"
+  "notations.proto\"\217\001\n\tJobStatus\0222\n\006status\030"
+  "\001 \001(\0162\".mapreduce_master.JobStatus.Statu"
+  "s\022\n\n\002id\030\002 \001(\r\022\016\n\006job_id\030\003 \001(\r\"2\n\006Status\022"
+  "\010\n\004IDLE\020\000\022\013\n\007WORKING\020\001\022\010\n\004DONE\020\002\022\007\n\003ERR\020"
+  "\0042\254\004\n\017MapReduceMaster\022s\n\014ReportStatus\022\033."
+  "mapreduce_master.JobStatus\032\036.mapreduce_c"
+  "ommon.EmptyMessage\"&\202\323\344\223\002 \"\033/v1/mapreduc"
+  "e/report_status:\001*\022^\n\003Job\022\034.mapreduce_co"
+  "mmon.JobMessage\032\033.mapreduce_master.JobSt"
+  "atus\"\034\202\323\344\223\002\026\"\021/v1/mapreduce/job:\001*\022`\n\tGe"
+  "tStatus\022\033.mapreduce_master.JobStatus\032\033.m"
+  "apreduce_master.JobStatus\"\031\202\323\344\223\002\023\022\021/v1/m"
+  "apreduce/job\022q\n\021RequestStreamFile\022\036.mapr"
+  "educe_common.EmptyMessage\032\033.mapreduce_ma"
+  "ster.JobStatus\"\037\202\323\344\223\002\031\"\024/v1/mapreduce/up"
+  "load:\001*\022o\n\nStreamFile\022\027.mapreduce_common"
+  ".Chunk\032\033.mapreduce_master.JobStatus\"+\202\323\344"
+  "\223\002%\" /v1/mapreduce/upload/{upload_id}:\001*"
+  "B\024Z\022.;mapreduce_masterb\006proto3"
   ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_mapreducemaster_2eproto_deps[1] = {
+static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_mapreducemaster_2eproto_deps[2] = {
+  &::descriptor_table_google_2fapi_2fannotations_2eproto,
   &::descriptor_table_mapreduce_5fcommon_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_mapreducemaster_2eproto_sccs[1] = {
@@ -73,8 +88,8 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_map
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_mapreducemaster_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_mapreducemaster_2eproto = {
-  false, false, descriptor_table_protodef_mapreducemaster_2eproto, "mapreducemaster.proto", 300,
-  &descriptor_table_mapreducemaster_2eproto_once, descriptor_table_mapreducemaster_2eproto_sccs, descriptor_table_mapreducemaster_2eproto_deps, 1, 1,
+  false, false, descriptor_table_protodef_mapreducemaster_2eproto, "mapreducemaster.proto", 830,
+  &descriptor_table_mapreducemaster_2eproto_once, descriptor_table_mapreducemaster_2eproto_sccs, descriptor_table_mapreducemaster_2eproto_deps, 1, 2,
   schemas, file_default_instances, TableStruct_mapreducemaster_2eproto::offsets,
   file_level_metadata_mapreducemaster_2eproto, 1, file_level_enum_descriptors_mapreducemaster_2eproto, file_level_service_descriptors_mapreducemaster_2eproto,
 };
@@ -126,15 +141,15 @@ JobStatus::JobStatus(const JobStatus& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&status_, &from.status_,
-    static_cast<size_t>(reinterpret_cast<char*>(&id_) -
-    reinterpret_cast<char*>(&status_)) + sizeof(id_));
+    static_cast<size_t>(reinterpret_cast<char*>(&job_id_) -
+    reinterpret_cast<char*>(&status_)) + sizeof(job_id_));
   // @@protoc_insertion_point(copy_constructor:mapreduce_master.JobStatus)
 }
 
 void JobStatus::SharedCtor() {
   ::memset(&status_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&id_) -
-      reinterpret_cast<char*>(&status_)) + sizeof(id_));
+      reinterpret_cast<char*>(&job_id_) -
+      reinterpret_cast<char*>(&status_)) + sizeof(job_id_));
 }
 
 JobStatus::~JobStatus() {
@@ -169,8 +184,8 @@ void JobStatus::Clear() {
   (void) cached_has_bits;
 
   ::memset(&status_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&id_) -
-      reinterpret_cast<char*>(&status_)) + sizeof(id_));
+      reinterpret_cast<char*>(&job_id_) -
+      reinterpret_cast<char*>(&status_)) + sizeof(job_id_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -190,10 +205,17 @@ const char* JobStatus::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::
           _internal_set_status(static_cast<::mapreduce_master::JobStatus_Status>(val));
         } else goto handle_unusual;
         continue;
-      // int32 ID = 2;
+      // uint32 id = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
-          id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 job_id = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          job_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -232,10 +254,16 @@ failure:
       1, this->_internal_status(), target);
   }
 
-  // int32 ID = 2;
+  // uint32 id = 2;
   if (this->id() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->_internal_id(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_id(), target);
+  }
+
+  // uint32 job_id = 3;
+  if (this->job_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_job_id(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -260,11 +288,18 @@ size_t JobStatus::ByteSizeLong() const {
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_status());
   }
 
-  // int32 ID = 2;
+  // uint32 id = 2;
   if (this->id() != 0) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->_internal_id());
+  }
+
+  // uint32 job_id = 3;
+  if (this->job_id() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_job_id());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -304,6 +339,9 @@ void JobStatus::MergeFrom(const JobStatus& from) {
   if (from.id() != 0) {
     _internal_set_id(from._internal_id());
   }
+  if (from.job_id() != 0) {
+    _internal_set_job_id(from._internal_job_id());
+  }
 }
 
 void JobStatus::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -328,8 +366,8 @@ void JobStatus::InternalSwap(JobStatus* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(JobStatus, id_)
-      + sizeof(JobStatus::id_)
+      PROTOBUF_FIELD_OFFSET(JobStatus, job_id_)
+      + sizeof(JobStatus::job_id_)
       - PROTOBUF_FIELD_OFFSET(JobStatus, status_)>(
           reinterpret_cast<char*>(&status_),
           reinterpret_cast<char*>(&other->status_));

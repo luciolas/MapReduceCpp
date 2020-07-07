@@ -1,8 +1,31 @@
 syntax = "proto3";
 
 package mapreduce_common;
-
+option go_package = ".;mapreduce_master";
 
 message EmptyMessage {
+}
 
+
+
+message JobMessage {
+  enum Phase {
+    MAP =0;
+    REDUCE =1;
+    MERGE = 2;
+  }
+
+  repeated string input = 1;
+  Phase phase = 2;
+  int32 nReduce = 3;
+  int32 nMap = 4;
+  string jobName = 5;
+
+}
+
+message Chunk {
+  bytes chunk = 1;
+  int32 position = 2;
+  int32 id = 3;
+  uint32 upload_id = 4;
 }

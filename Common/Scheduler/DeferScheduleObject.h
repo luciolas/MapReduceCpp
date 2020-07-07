@@ -35,6 +35,7 @@ namespace MapReduce
 
 }
 #ifdef _MSC_VER
-#define def(LINE, Callable, ...) ::MapReduce::DeferObject Defer##c##LINE{Callable, __VA_ARGS__};
-#define DEFER(Callable, ...) def(__LINE__, Callable, __VA_ARGS__)
+#define makedeferobject(l, Callable, ...) ::MapReduce::DeferObject Defer##l##{Callable, __VA_ARGS__};
+#define DEFER2(l, Callable,...) makedeferobject(l, Callable, __VA_ARGS__)
+#define DEFER(Callable, ...)   DEFER2 (__LINE__, Callable, __VA_ARGS__)
 #endif

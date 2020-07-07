@@ -34,6 +34,7 @@
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 #include "mapreduce_common.pb.h"
+#include "google/api/annotations.pb.h"
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_mapreducemaster_2eproto
@@ -243,7 +244,8 @@ class JobStatus PROTOBUF_FINAL :
 
   enum : int {
     kStatusFieldNumber = 1,
-    kIDFieldNumber = 2,
+    kIdFieldNumber = 2,
+    kJobIdFieldNumber = 3,
   };
   // .mapreduce_master.JobStatus.Status status = 1;
   void clear_status();
@@ -254,13 +256,22 @@ class JobStatus PROTOBUF_FINAL :
   void _internal_set_status(::mapreduce_master::JobStatus_Status value);
   public:
 
-  // int32 ID = 2;
+  // uint32 id = 2;
   void clear_id();
-  ::PROTOBUF_NAMESPACE_ID::int32 id() const;
-  void set_id(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::uint32 id() const;
+  void set_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_id() const;
-  void _internal_set_id(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_id() const;
+  void _internal_set_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 job_id = 3;
+  void clear_job_id();
+  ::PROTOBUF_NAMESPACE_ID::uint32 job_id() const;
+  void set_job_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_job_id() const;
+  void _internal_set_job_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:mapreduce_master.JobStatus)
@@ -271,7 +282,8 @@ class JobStatus PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   int status_;
-  ::PROTOBUF_NAMESPACE_ID::int32 id_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 id_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 job_id_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_mapreducemaster_2eproto;
 };
@@ -306,24 +318,44 @@ inline void JobStatus::set_status(::mapreduce_master::JobStatus_Status value) {
   // @@protoc_insertion_point(field_set:mapreduce_master.JobStatus.status)
 }
 
-// int32 ID = 2;
+// uint32 id = 2;
 inline void JobStatus::clear_id() {
-  id_ = 0;
+  id_ = 0u;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 JobStatus::_internal_id() const {
+inline ::PROTOBUF_NAMESPACE_ID::uint32 JobStatus::_internal_id() const {
   return id_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 JobStatus::id() const {
-  // @@protoc_insertion_point(field_get:mapreduce_master.JobStatus.ID)
+inline ::PROTOBUF_NAMESPACE_ID::uint32 JobStatus::id() const {
+  // @@protoc_insertion_point(field_get:mapreduce_master.JobStatus.id)
   return _internal_id();
 }
-inline void JobStatus::_internal_set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void JobStatus::_internal_set_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   
   id_ = value;
 }
-inline void JobStatus::set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void JobStatus::set_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
   _internal_set_id(value);
-  // @@protoc_insertion_point(field_set:mapreduce_master.JobStatus.ID)
+  // @@protoc_insertion_point(field_set:mapreduce_master.JobStatus.id)
+}
+
+// uint32 job_id = 3;
+inline void JobStatus::clear_job_id() {
+  job_id_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 JobStatus::_internal_job_id() const {
+  return job_id_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 JobStatus::job_id() const {
+  // @@protoc_insertion_point(field_get:mapreduce_master.JobStatus.job_id)
+  return _internal_job_id();
+}
+inline void JobStatus::_internal_set_job_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  job_id_ = value;
+}
+inline void JobStatus::set_job_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_job_id(value);
+  // @@protoc_insertion_point(field_set:mapreduce_master.JobStatus.job_id)
 }
 
 #ifdef __GNUC__

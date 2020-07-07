@@ -16,7 +16,7 @@ using mapreduce_common::EmptyMessage;
 using grpc::Status;
 using grpc::ServerContext;
 using grpc::Server;
-using mapreduce_worker::JobMessage;
+using mapreduce_common::JobMessage;
 using mapreduce_master::JobStatus;
 
 class Worker final : public MapReduceWorker::Service
@@ -32,12 +32,14 @@ class Worker final : public MapReduceWorker::Service
   int port_;
   void doMap(const std::string& jobName, const std::string& file, int mapTaskN, int nReduce, mapFunc mapf);
   void doReduce(const std::string& jobName, int mapTaskN, int nReduce, reduceFunc reducef);
+  void doMerge(const std::string& jobname, int nMapTask, int nReduce);
 public:
   Worker(std::shared_ptr<Channel> chnl, const std::string& addr);
   Worker(std::shared_ptr<Channel> chnl, const std::string& addr, int id);
 
   Status Work(ServerContext* serverCtx, const JobMessage * msg, EmptyMessage* reply) override;
   std::string GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce);
+  std::string GenerateMergeName(const std::string& jobName, int mapTaskN, int nReduce);
   Status Shutdown(ServerContext* serverCtx, const EmptyMessage* req, EmptyMessage* reply) override;
   void Report(JobStatus js);
   void Start(int startPort);

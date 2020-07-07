@@ -15,398 +15,43 @@
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 namespace mapreduce_worker {
-class JobMessageDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<JobMessage> _instance;
-} _JobMessage_default_instance_;
 }  // namespace mapreduce_worker
-static void InitDefaultsscc_info_JobMessage_mapreduceworker_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::mapreduce_worker::_JobMessage_default_instance_;
-    new (ptr) ::mapreduce_worker::JobMessage();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::mapreduce_worker::JobMessage::InitAsDefaultInstance();
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_JobMessage_mapreduceworker_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_JobMessage_mapreduceworker_2eproto}, {}};
-
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_mapreduceworker_2eproto[1];
-static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_mapreduceworker_2eproto[1];
+static constexpr ::PROTOBUF_NAMESPACE_ID::Metadata* file_level_metadata_mapreduceworker_2eproto = nullptr;
+static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_mapreduceworker_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_mapreduceworker_2eproto = nullptr;
-
-const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_mapreduceworker_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::mapreduce_worker::JobMessage, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::mapreduce_worker::JobMessage, input_),
-  PROTOBUF_FIELD_OFFSET(::mapreduce_worker::JobMessage, phase_),
-  PROTOBUF_FIELD_OFFSET(::mapreduce_worker::JobMessage, nreduce_),
-  PROTOBUF_FIELD_OFFSET(::mapreduce_worker::JobMessage, nmap_),
-};
-static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::mapreduce_worker::JobMessage)},
-};
-
-static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::mapreduce_worker::_JobMessage_default_instance_),
-};
+const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_mapreduceworker_2eproto::offsets[1] = {};
+static constexpr ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema* schemas = nullptr;
+static constexpr ::PROTOBUF_NAMESPACE_ID::Message* const* file_default_instances = nullptr;
 
 const char descriptor_table_protodef_mapreduceworker_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\025mapreduceworker.proto\022\020mapreduce_worke"
-  "r\032\026mapreduce_common.proto\"\213\001\n\nJobMessage"
-  "\022\r\n\005input\030\001 \003(\t\0221\n\005phase\030\002 \001(\0162\".mapredu"
-  "ce_worker.JobMessage.Phase\022\017\n\007nReduce\030\003 "
-  "\001(\005\022\014\n\004nMap\030\004 \001(\005\"\034\n\005Phase\022\007\n\003MAP\020\000\022\n\n\006R"
-  "EDUCE\020\0012\247\001\n\017MapReduceWorker\022F\n\004Work\022\034.ma"
-  "preduce_worker.JobMessage\032\036.mapreduce_co"
-  "mmon.EmptyMessage\"\000\022L\n\010Shutdown\022\036.mapred"
-  "uce_common.EmptyMessage\032\036.mapreduce_comm"
-  "on.EmptyMessage\"\000b\006proto3"
+  "r\032\026mapreduce_common.proto2\247\001\n\017MapReduceW"
+  "orker\022F\n\004Work\022\034.mapreduce_common.JobMess"
+  "age\032\036.mapreduce_common.EmptyMessage\"\000\022L\n"
+  "\010Shutdown\022\036.mapreduce_common.EmptyMessag"
+  "e\032\036.mapreduce_common.EmptyMessage\"\000B\024Z\022."
+  ";mapreduce_masterb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_mapreduceworker_2eproto_deps[1] = {
   &::descriptor_table_mapreduce_5fcommon_2eproto,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_mapreduceworker_2eproto_sccs[1] = {
-  &scc_info_JobMessage_mapreduceworker_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_mapreduceworker_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_mapreduceworker_2eproto = {
-  false, false, descriptor_table_protodef_mapreduceworker_2eproto, "mapreduceworker.proto", 385,
-  &descriptor_table_mapreduceworker_2eproto_once, descriptor_table_mapreduceworker_2eproto_sccs, descriptor_table_mapreduceworker_2eproto_deps, 1, 1,
+  false, false, descriptor_table_protodef_mapreduceworker_2eproto, "mapreduceworker.proto", 265,
+  &descriptor_table_mapreduceworker_2eproto_once, descriptor_table_mapreduceworker_2eproto_sccs, descriptor_table_mapreduceworker_2eproto_deps, 0, 1,
   schemas, file_default_instances, TableStruct_mapreduceworker_2eproto::offsets,
-  file_level_metadata_mapreduceworker_2eproto, 1, file_level_enum_descriptors_mapreduceworker_2eproto, file_level_service_descriptors_mapreduceworker_2eproto,
+  file_level_metadata_mapreduceworker_2eproto, 0, file_level_enum_descriptors_mapreduceworker_2eproto, file_level_service_descriptors_mapreduceworker_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
 static bool dynamic_init_dummy_mapreduceworker_2eproto = (static_cast<void>(::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_mapreduceworker_2eproto)), true);
 namespace mapreduce_worker {
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* JobMessage_Phase_descriptor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_mapreduceworker_2eproto);
-  return file_level_enum_descriptors_mapreduceworker_2eproto[0];
-}
-bool JobMessage_Phase_IsValid(int value) {
-  switch (value) {
-    case 0:
-    case 1:
-      return true;
-    default:
-      return false;
-  }
-}
-
-#if (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
-constexpr JobMessage_Phase JobMessage::MAP;
-constexpr JobMessage_Phase JobMessage::REDUCE;
-constexpr JobMessage_Phase JobMessage::Phase_MIN;
-constexpr JobMessage_Phase JobMessage::Phase_MAX;
-constexpr int JobMessage::Phase_ARRAYSIZE;
-#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || _MSC_VER >= 1900)
-
-// ===================================================================
-
-void JobMessage::InitAsDefaultInstance() {
-}
-class JobMessage::_Internal {
- public:
-};
-
-JobMessage::JobMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
-  input_(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:mapreduce_worker.JobMessage)
-}
-JobMessage::JobMessage(const JobMessage& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message(),
-      input_(from.input_) {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&phase_, &from.phase_,
-    static_cast<size_t>(reinterpret_cast<char*>(&nmap_) -
-    reinterpret_cast<char*>(&phase_)) + sizeof(nmap_));
-  // @@protoc_insertion_point(copy_constructor:mapreduce_worker.JobMessage)
-}
-
-void JobMessage::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_JobMessage_mapreduceworker_2eproto.base);
-  ::memset(&phase_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&nmap_) -
-      reinterpret_cast<char*>(&phase_)) + sizeof(nmap_));
-}
-
-JobMessage::~JobMessage() {
-  // @@protoc_insertion_point(destructor:mapreduce_worker.JobMessage)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void JobMessage::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
-}
-
-void JobMessage::ArenaDtor(void* object) {
-  JobMessage* _this = reinterpret_cast< JobMessage* >(object);
-  (void)_this;
-}
-void JobMessage::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void JobMessage::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const JobMessage& JobMessage::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_JobMessage_mapreduceworker_2eproto.base);
-  return *internal_default_instance();
-}
-
-
-void JobMessage::Clear() {
-// @@protoc_insertion_point(message_clear_start:mapreduce_worker.JobMessage)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  input_.Clear();
-  ::memset(&phase_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&nmap_) -
-      reinterpret_cast<char*>(&phase_)) + sizeof(nmap_));
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* JobMessage::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
-    switch (tag >> 3) {
-      // repeated string input = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            auto str = _internal_add_input();
-            ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-            CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "mapreduce_worker.JobMessage.input"));
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
-        } else goto handle_unusual;
-        continue;
-      // .mapreduce_worker.JobMessage.Phase phase = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
-          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-          _internal_set_phase(static_cast<::mapreduce_worker::JobMessage_Phase>(val));
-        } else goto handle_unusual;
-        continue;
-      // int32 nReduce = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
-          nreduce_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // int32 nMap = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
-          nmap_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
-    }  // switch
-  }  // while
-success:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto success;
-#undef CHK_
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* JobMessage::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:mapreduce_worker.JobMessage)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // repeated string input = 1;
-  for (int i = 0, n = this->_internal_input_size(); i < n; i++) {
-    const auto& s = this->_internal_input(i);
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      s.data(), static_cast<int>(s.length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "mapreduce_worker.JobMessage.input");
-    target = stream->WriteString(1, s, target);
-  }
-
-  // .mapreduce_worker.JobMessage.Phase phase = 2;
-  if (this->phase() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
-      2, this->_internal_phase(), target);
-  }
-
-  // int32 nReduce = 3;
-  if (this->nreduce() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_nreduce(), target);
-  }
-
-  // int32 nMap = 4;
-  if (this->nmap() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_nmap(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:mapreduce_worker.JobMessage)
-  return target;
-}
-
-size_t JobMessage::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:mapreduce_worker.JobMessage)
-  size_t total_size = 0;
-
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // repeated string input = 1;
-  total_size += 1 *
-      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(input_.size());
-  for (int i = 0, n = input_.size(); i < n; i++) {
-    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-      input_.Get(i));
-  }
-
-  // .mapreduce_worker.JobMessage.Phase phase = 2;
-  if (this->phase() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_phase());
-  }
-
-  // int32 nReduce = 3;
-  if (this->nreduce() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_nreduce());
-  }
-
-  // int32 nMap = 4;
-  if (this->nmap() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_nmap());
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void JobMessage::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:mapreduce_worker.JobMessage)
-  GOOGLE_DCHECK_NE(&from, this);
-  const JobMessage* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<JobMessage>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:mapreduce_worker.JobMessage)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:mapreduce_worker.JobMessage)
-    MergeFrom(*source);
-  }
-}
-
-void JobMessage::MergeFrom(const JobMessage& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:mapreduce_worker.JobMessage)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  input_.MergeFrom(from.input_);
-  if (from.phase() != 0) {
-    _internal_set_phase(from._internal_phase());
-  }
-  if (from.nreduce() != 0) {
-    _internal_set_nreduce(from._internal_nreduce());
-  }
-  if (from.nmap() != 0) {
-    _internal_set_nmap(from._internal_nmap());
-  }
-}
-
-void JobMessage::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:mapreduce_worker.JobMessage)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void JobMessage::CopyFrom(const JobMessage& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:mapreduce_worker.JobMessage)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool JobMessage::IsInitialized() const {
-  return true;
-}
-
-void JobMessage::InternalSwap(JobMessage* other) {
-  using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  input_.InternalSwap(&other->input_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(JobMessage, nmap_)
-      + sizeof(JobMessage::nmap_)
-      - PROTOBUF_FIELD_OFFSET(JobMessage, phase_)>(
-          reinterpret_cast<char*>(&phase_),
-          reinterpret_cast<char*>(&other->phase_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata JobMessage::GetMetadata() const {
-  return GetMetadataStatic();
-}
-
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace mapreduce_worker
 PROTOBUF_NAMESPACE_OPEN
-template<> PROTOBUF_NOINLINE ::mapreduce_worker::JobMessage* Arena::CreateMaybeMessage< ::mapreduce_worker::JobMessage >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::mapreduce_worker::JobMessage >(arena);
-}
 PROTOBUF_NAMESPACE_CLOSE
 
 // @@protoc_insertion_point(global_scope)

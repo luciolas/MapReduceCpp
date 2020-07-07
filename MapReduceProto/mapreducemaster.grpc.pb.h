@@ -43,6 +43,34 @@ class MapReduceMaster final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>> PrepareAsyncReportStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>>(PrepareAsyncReportStatusRaw(context, request, cq));
     }
+    virtual ::grpc::Status Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::mapreduce_master::JobStatus* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>> AsyncJob(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>>(AsyncJobRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>> PrepareAsyncJob(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>>(PrepareAsyncJobRaw(context, request, cq));
+    }
+    virtual ::grpc::Status GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::mapreduce_master::JobStatus* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>> AsyncGetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>>(AsyncGetStatusRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>> PrepareAsyncGetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>>(PrepareAsyncGetStatusRaw(context, request, cq));
+    }
+    virtual ::grpc::Status RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::mapreduce_master::JobStatus* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>> AsyncRequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>>(AsyncRequestStreamFileRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>> PrepareAsyncRequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>>(PrepareAsyncRequestStreamFileRaw(context, request, cq));
+    }
+    virtual ::grpc::Status StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::mapreduce_master::JobStatus* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>> AsyncStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>>(AsyncStreamFileRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>> PrepareAsyncStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>>(PrepareAsyncStreamFileRaw(context, request, cq));
+    }
     class experimental_async_interface {
      public:
       virtual ~experimental_async_interface() {}
@@ -58,6 +86,54 @@ class MapReduceMaster final {
       #else
       virtual void ReportStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_common::EmptyMessage* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
+      virtual void Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void Job(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void Job(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void Job(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      virtual void GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void GetStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void GetStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void GetStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      virtual void RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void RequestStreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void RequestStreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void RequestStreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      virtual void StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void StreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void StreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void StreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
     };
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     typedef class experimental_async_interface async_interface;
@@ -69,6 +145,14 @@ class MapReduceMaster final {
   private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>* AsyncReportStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>* PrepareAsyncReportStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>* AsyncJobRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>* PrepareAsyncJobRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>* AsyncGetStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>* PrepareAsyncGetStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>* AsyncRequestStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>* PrepareAsyncRequestStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>* AsyncStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_master::JobStatus>* PrepareAsyncStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -79,6 +163,34 @@ class MapReduceMaster final {
     }
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>> PrepareAsyncReportStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>>(PrepareAsyncReportStatusRaw(context, request, cq));
+    }
+    ::grpc::Status Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::mapreduce_master::JobStatus* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>> AsyncJob(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>>(AsyncJobRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>> PrepareAsyncJob(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>>(PrepareAsyncJobRaw(context, request, cq));
+    }
+    ::grpc::Status GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::mapreduce_master::JobStatus* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>> AsyncGetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>>(AsyncGetStatusRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>> PrepareAsyncGetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>>(PrepareAsyncGetStatusRaw(context, request, cq));
+    }
+    ::grpc::Status RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::mapreduce_master::JobStatus* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>> AsyncRequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>>(AsyncRequestStreamFileRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>> PrepareAsyncRequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>>(PrepareAsyncRequestStreamFileRaw(context, request, cq));
+    }
+    ::grpc::Status StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::mapreduce_master::JobStatus* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>> AsyncStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>>(AsyncStreamFileRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>> PrepareAsyncStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>>(PrepareAsyncStreamFileRaw(context, request, cq));
     }
     class experimental_async final :
       public StubInterface::experimental_async_interface {
@@ -95,6 +207,54 @@ class MapReduceMaster final {
       #else
       void ReportStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_common::EmptyMessage* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
+      void Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) override;
+      void Job(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void Job(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void Job(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void Job(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) override;
+      void GetStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void GetStatus(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void GetStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void GetStatus(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) override;
+      void RequestStreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void RequestStreamFile(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void RequestStreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void RequestStreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      void StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) override;
+      void StreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void StreamFile(::grpc::ClientContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void StreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void StreamFile(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_master::JobStatus* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
      private:
       friend class Stub;
       explicit experimental_async(Stub* stub): stub_(stub) { }
@@ -108,7 +268,19 @@ class MapReduceMaster final {
     class experimental_async async_stub_{this};
     ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* AsyncReportStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* PrepareAsyncReportStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* AsyncJobRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* PrepareAsyncJobRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* AsyncGetStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* PrepareAsyncGetStatusRaw(::grpc::ClientContext* context, const ::mapreduce_master::JobStatus& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* AsyncRequestStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* PrepareAsyncRequestStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* AsyncStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_master::JobStatus>* PrepareAsyncStreamFileRaw(::grpc::ClientContext* context, const ::mapreduce_common::Chunk& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_ReportStatus_;
+    const ::grpc::internal::RpcMethod rpcmethod_Job_;
+    const ::grpc::internal::RpcMethod rpcmethod_GetStatus_;
+    const ::grpc::internal::RpcMethod rpcmethod_RequestStreamFile_;
+    const ::grpc::internal::RpcMethod rpcmethod_StreamFile_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -117,6 +289,10 @@ class MapReduceMaster final {
     Service();
     virtual ~Service();
     virtual ::grpc::Status ReportStatus(::grpc::ServerContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_common::EmptyMessage* response);
+    virtual ::grpc::Status Job(::grpc::ServerContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response);
+    virtual ::grpc::Status GetStatus(::grpc::ServerContext* context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response);
+    virtual ::grpc::Status RequestStreamFile(::grpc::ServerContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response);
+    virtual ::grpc::Status StreamFile(::grpc::ServerContext* context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_ReportStatus : public BaseClass {
@@ -138,7 +314,87 @@ class MapReduceMaster final {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_ReportStatus<Service > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_Job : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_Job() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_Job() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Job(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestJob(::grpc::ServerContext* context, ::mapreduce_common::JobMessage* request, ::grpc::ServerAsyncResponseWriter< ::mapreduce_master::JobStatus>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_GetStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_GetStatus() {
+      ::grpc::Service::MarkMethodAsync(2);
+    }
+    ~WithAsyncMethod_GetStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetStatus(::grpc::ServerContext* /*context*/, const ::mapreduce_master::JobStatus* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestGetStatus(::grpc::ServerContext* context, ::mapreduce_master::JobStatus* request, ::grpc::ServerAsyncResponseWriter< ::mapreduce_master::JobStatus>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_RequestStreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_RequestStreamFile() {
+      ::grpc::Service::MarkMethodAsync(3);
+    }
+    ~WithAsyncMethod_RequestStreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status RequestStreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::EmptyMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestRequestStreamFile(::grpc::ServerContext* context, ::mapreduce_common::EmptyMessage* request, ::grpc::ServerAsyncResponseWriter< ::mapreduce_master::JobStatus>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_StreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_StreamFile() {
+      ::grpc::Service::MarkMethodAsync(4);
+    }
+    ~WithAsyncMethod_StreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::Chunk* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestStreamFile(::grpc::ServerContext* context, ::mapreduce_common::Chunk* request, ::grpc::ServerAsyncResponseWriter< ::mapreduce_master::JobStatus>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_ReportStatus<WithAsyncMethod_Job<WithAsyncMethod_GetStatus<WithAsyncMethod_RequestStreamFile<WithAsyncMethod_StreamFile<Service > > > > > AsyncService;
   template <class BaseClass>
   class ExperimentalWithCallbackMethod_ReportStatus : public BaseClass {
    private:
@@ -186,11 +442,199 @@ class MapReduceMaster final {
     #endif
       { return nullptr; }
   };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_Job : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_Job() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(1,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_common::JobMessage, ::mapreduce_master::JobStatus>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::mapreduce_common::JobMessage* request, ::mapreduce_master::JobStatus* response) { return this->Job(context, request, response); }));}
+    void SetMessageAllocatorFor_Job(
+        ::grpc::experimental::MessageAllocator< ::mapreduce_common::JobMessage, ::mapreduce_master::JobStatus>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(1);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_common::JobMessage, ::mapreduce_master::JobStatus>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_Job() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Job(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* Job(
+      ::grpc::CallbackServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* Job(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_GetStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_GetStatus() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(2,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_master::JobStatus, ::mapreduce_master::JobStatus>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::mapreduce_master::JobStatus* request, ::mapreduce_master::JobStatus* response) { return this->GetStatus(context, request, response); }));}
+    void SetMessageAllocatorFor_GetStatus(
+        ::grpc::experimental::MessageAllocator< ::mapreduce_master::JobStatus, ::mapreduce_master::JobStatus>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(2);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_master::JobStatus, ::mapreduce_master::JobStatus>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_GetStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetStatus(::grpc::ServerContext* /*context*/, const ::mapreduce_master::JobStatus* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* GetStatus(
+      ::grpc::CallbackServerContext* /*context*/, const ::mapreduce_master::JobStatus* /*request*/, ::mapreduce_master::JobStatus* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* GetStatus(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::mapreduce_master::JobStatus* /*request*/, ::mapreduce_master::JobStatus* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_RequestStreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_RequestStreamFile() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(3,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_common::EmptyMessage, ::mapreduce_master::JobStatus>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_master::JobStatus* response) { return this->RequestStreamFile(context, request, response); }));}
+    void SetMessageAllocatorFor_RequestStreamFile(
+        ::grpc::experimental::MessageAllocator< ::mapreduce_common::EmptyMessage, ::mapreduce_master::JobStatus>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(3);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(3);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_common::EmptyMessage, ::mapreduce_master::JobStatus>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_RequestStreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status RequestStreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::EmptyMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* RequestStreamFile(
+      ::grpc::CallbackServerContext* /*context*/, const ::mapreduce_common::EmptyMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* RequestStreamFile(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::mapreduce_common::EmptyMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_StreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_StreamFile() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(4,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_common::Chunk, ::mapreduce_master::JobStatus>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::mapreduce_common::Chunk* request, ::mapreduce_master::JobStatus* response) { return this->StreamFile(context, request, response); }));}
+    void SetMessageAllocatorFor_StreamFile(
+        ::grpc::experimental::MessageAllocator< ::mapreduce_common::Chunk, ::mapreduce_master::JobStatus>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(4);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(4);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_common::Chunk, ::mapreduce_master::JobStatus>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_StreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::Chunk* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* StreamFile(
+      ::grpc::CallbackServerContext* /*context*/, const ::mapreduce_common::Chunk* /*request*/, ::mapreduce_master::JobStatus* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* StreamFile(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::mapreduce_common::Chunk* /*request*/, ::mapreduce_master::JobStatus* /*response*/)
+    #endif
+      { return nullptr; }
+  };
   #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-  typedef ExperimentalWithCallbackMethod_ReportStatus<Service > CallbackService;
+  typedef ExperimentalWithCallbackMethod_ReportStatus<ExperimentalWithCallbackMethod_Job<ExperimentalWithCallbackMethod_GetStatus<ExperimentalWithCallbackMethod_RequestStreamFile<ExperimentalWithCallbackMethod_StreamFile<Service > > > > > CallbackService;
   #endif
 
-  typedef ExperimentalWithCallbackMethod_ReportStatus<Service > ExperimentalCallbackService;
+  typedef ExperimentalWithCallbackMethod_ReportStatus<ExperimentalWithCallbackMethod_Job<ExperimentalWithCallbackMethod_GetStatus<ExperimentalWithCallbackMethod_RequestStreamFile<ExperimentalWithCallbackMethod_StreamFile<Service > > > > > ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_ReportStatus : public BaseClass {
    private:
@@ -204,6 +648,74 @@ class MapReduceMaster final {
     }
     // disable synchronous version of this method
     ::grpc::Status ReportStatus(::grpc::ServerContext* /*context*/, const ::mapreduce_master::JobStatus* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_Job : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_Job() {
+      ::grpc::Service::MarkMethodGeneric(1);
+    }
+    ~WithGenericMethod_Job() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Job(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_GetStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_GetStatus() {
+      ::grpc::Service::MarkMethodGeneric(2);
+    }
+    ~WithGenericMethod_GetStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetStatus(::grpc::ServerContext* /*context*/, const ::mapreduce_master::JobStatus* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_RequestStreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_RequestStreamFile() {
+      ::grpc::Service::MarkMethodGeneric(3);
+    }
+    ~WithGenericMethod_RequestStreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status RequestStreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::EmptyMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_StreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_StreamFile() {
+      ::grpc::Service::MarkMethodGeneric(4);
+    }
+    ~WithGenericMethod_StreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::Chunk* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -226,6 +738,86 @@ class MapReduceMaster final {
     }
     void RequestReportStatus(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_Job : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_Job() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_Job() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Job(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestJob(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_GetStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_GetStatus() {
+      ::grpc::Service::MarkMethodRaw(2);
+    }
+    ~WithRawMethod_GetStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetStatus(::grpc::ServerContext* /*context*/, const ::mapreduce_master::JobStatus* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestGetStatus(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_RequestStreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_RequestStreamFile() {
+      ::grpc::Service::MarkMethodRaw(3);
+    }
+    ~WithRawMethod_RequestStreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status RequestStreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::EmptyMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestRequestStreamFile(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_StreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_StreamFile() {
+      ::grpc::Service::MarkMethodRaw(4);
+    }
+    ~WithRawMethod_StreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::Chunk* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestStreamFile(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -267,6 +859,158 @@ class MapReduceMaster final {
       { return nullptr; }
   };
   template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_Job : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_Job() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(1,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->Job(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_Job() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status Job(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* Job(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* Job(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_GetStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_GetStatus() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(2,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->GetStatus(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_GetStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetStatus(::grpc::ServerContext* /*context*/, const ::mapreduce_master::JobStatus* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* GetStatus(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* GetStatus(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_RequestStreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_RequestStreamFile() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(3,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->RequestStreamFile(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_RequestStreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status RequestStreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::EmptyMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* RequestStreamFile(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* RequestStreamFile(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_StreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_StreamFile() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(4,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->StreamFile(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_StreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status StreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::Chunk* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* StreamFile(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* StreamFile(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
   class WithStreamedUnaryMethod_ReportStatus : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
@@ -286,9 +1030,89 @@ class MapReduceMaster final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedReportStatus(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::mapreduce_master::JobStatus,::mapreduce_common::EmptyMessage>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_ReportStatus<Service > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_Job : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_Job() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler< ::mapreduce_common::JobMessage, ::mapreduce_master::JobStatus>(std::bind(&WithStreamedUnaryMethod_Job<BaseClass>::StreamedJob, this, std::placeholders::_1, std::placeholders::_2)));
+    }
+    ~WithStreamedUnaryMethod_Job() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status Job(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedJob(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::mapreduce_common::JobMessage,::mapreduce_master::JobStatus>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_GetStatus : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_GetStatus() {
+      ::grpc::Service::MarkMethodStreamed(2,
+        new ::grpc::internal::StreamedUnaryHandler< ::mapreduce_master::JobStatus, ::mapreduce_master::JobStatus>(std::bind(&WithStreamedUnaryMethod_GetStatus<BaseClass>::StreamedGetStatus, this, std::placeholders::_1, std::placeholders::_2)));
+    }
+    ~WithStreamedUnaryMethod_GetStatus() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status GetStatus(::grpc::ServerContext* /*context*/, const ::mapreduce_master::JobStatus* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedGetStatus(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::mapreduce_master::JobStatus,::mapreduce_master::JobStatus>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_RequestStreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_RequestStreamFile() {
+      ::grpc::Service::MarkMethodStreamed(3,
+        new ::grpc::internal::StreamedUnaryHandler< ::mapreduce_common::EmptyMessage, ::mapreduce_master::JobStatus>(std::bind(&WithStreamedUnaryMethod_RequestStreamFile<BaseClass>::StreamedRequestStreamFile, this, std::placeholders::_1, std::placeholders::_2)));
+    }
+    ~WithStreamedUnaryMethod_RequestStreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status RequestStreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::EmptyMessage* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedRequestStreamFile(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::mapreduce_common::EmptyMessage,::mapreduce_master::JobStatus>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_StreamFile : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_StreamFile() {
+      ::grpc::Service::MarkMethodStreamed(4,
+        new ::grpc::internal::StreamedUnaryHandler< ::mapreduce_common::Chunk, ::mapreduce_master::JobStatus>(std::bind(&WithStreamedUnaryMethod_StreamFile<BaseClass>::StreamedStreamFile, this, std::placeholders::_1, std::placeholders::_2)));
+    }
+    ~WithStreamedUnaryMethod_StreamFile() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status StreamFile(::grpc::ServerContext* /*context*/, const ::mapreduce_common::Chunk* /*request*/, ::mapreduce_master::JobStatus* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedStreamFile(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::mapreduce_common::Chunk,::mapreduce_master::JobStatus>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_ReportStatus<WithStreamedUnaryMethod_Job<WithStreamedUnaryMethod_GetStatus<WithStreamedUnaryMethod_RequestStreamFile<WithStreamedUnaryMethod_StreamFile<Service > > > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_ReportStatus<Service > StreamedService;
+  typedef WithStreamedUnaryMethod_ReportStatus<WithStreamedUnaryMethod_Job<WithStreamedUnaryMethod_GetStatus<WithStreamedUnaryMethod_RequestStreamFile<WithStreamedUnaryMethod_StreamFile<Service > > > > > StreamedService;
 };
 
 }  // namespace mapreduce_master

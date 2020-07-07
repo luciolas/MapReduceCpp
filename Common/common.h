@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include "JSON/single_include/nlohmann/json.hpp"
+#include "Scheduler/DeferScheduleObject.h"
 
 using json = nlohmann::json;
 

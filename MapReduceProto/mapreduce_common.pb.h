@@ -31,6 +31,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
@@ -47,7 +48,7 @@ struct TableStruct_mapreduce_5fcommon_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[1]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -55,15 +56,49 @@ struct TableStruct_mapreduce_5fcommon_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_mapreduce_5fcommon_2eproto;
 namespace mapreduce_common {
+class Chunk;
+class ChunkDefaultTypeInternal;
+extern ChunkDefaultTypeInternal _Chunk_default_instance_;
 class EmptyMessage;
 class EmptyMessageDefaultTypeInternal;
 extern EmptyMessageDefaultTypeInternal _EmptyMessage_default_instance_;
+class JobMessage;
+class JobMessageDefaultTypeInternal;
+extern JobMessageDefaultTypeInternal _JobMessage_default_instance_;
 }  // namespace mapreduce_common
 PROTOBUF_NAMESPACE_OPEN
+template<> ::mapreduce_common::Chunk* Arena::CreateMaybeMessage<::mapreduce_common::Chunk>(Arena*);
 template<> ::mapreduce_common::EmptyMessage* Arena::CreateMaybeMessage<::mapreduce_common::EmptyMessage>(Arena*);
+template<> ::mapreduce_common::JobMessage* Arena::CreateMaybeMessage<::mapreduce_common::JobMessage>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace mapreduce_common {
 
+enum JobMessage_Phase : int {
+  JobMessage_Phase_MAP = 0,
+  JobMessage_Phase_REDUCE = 1,
+  JobMessage_Phase_MERGE = 2,
+  JobMessage_Phase_JobMessage_Phase_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  JobMessage_Phase_JobMessage_Phase_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+};
+bool JobMessage_Phase_IsValid(int value);
+constexpr JobMessage_Phase JobMessage_Phase_Phase_MIN = JobMessage_Phase_MAP;
+constexpr JobMessage_Phase JobMessage_Phase_Phase_MAX = JobMessage_Phase_MERGE;
+constexpr int JobMessage_Phase_Phase_ARRAYSIZE = JobMessage_Phase_Phase_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* JobMessage_Phase_descriptor();
+template<typename T>
+inline const std::string& JobMessage_Phase_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, JobMessage_Phase>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function JobMessage_Phase_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    JobMessage_Phase_descriptor(), enum_t_value);
+}
+inline bool JobMessage_Phase_Parse(
+    const std::string& name, JobMessage_Phase* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<JobMessage_Phase>(
+    JobMessage_Phase_descriptor(), name, value);
+}
 // ===================================================================
 
 class EmptyMessage PROTOBUF_FINAL :
@@ -188,6 +223,436 @@ class EmptyMessage PROTOBUF_FINAL :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_mapreduce_5fcommon_2eproto;
 };
+// -------------------------------------------------------------------
+
+class JobMessage PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:mapreduce_common.JobMessage) */ {
+ public:
+  inline JobMessage() : JobMessage(nullptr) {};
+  virtual ~JobMessage();
+
+  JobMessage(const JobMessage& from);
+  JobMessage(JobMessage&& from) noexcept
+    : JobMessage() {
+    *this = ::std::move(from);
+  }
+
+  inline JobMessage& operator=(const JobMessage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline JobMessage& operator=(JobMessage&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const JobMessage& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const JobMessage* internal_default_instance() {
+    return reinterpret_cast<const JobMessage*>(
+               &_JobMessage_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(JobMessage& a, JobMessage& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(JobMessage* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(JobMessage* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline JobMessage* New() const final {
+    return CreateMaybeMessage<JobMessage>(nullptr);
+  }
+
+  JobMessage* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<JobMessage>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const JobMessage& from);
+  void MergeFrom(const JobMessage& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(JobMessage* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "mapreduce_common.JobMessage";
+  }
+  protected:
+  explicit JobMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_mapreduce_5fcommon_2eproto);
+    return ::descriptor_table_mapreduce_5fcommon_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  typedef JobMessage_Phase Phase;
+  static constexpr Phase MAP =
+    JobMessage_Phase_MAP;
+  static constexpr Phase REDUCE =
+    JobMessage_Phase_REDUCE;
+  static constexpr Phase MERGE =
+    JobMessage_Phase_MERGE;
+  static inline bool Phase_IsValid(int value) {
+    return JobMessage_Phase_IsValid(value);
+  }
+  static constexpr Phase Phase_MIN =
+    JobMessage_Phase_Phase_MIN;
+  static constexpr Phase Phase_MAX =
+    JobMessage_Phase_Phase_MAX;
+  static constexpr int Phase_ARRAYSIZE =
+    JobMessage_Phase_Phase_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  Phase_descriptor() {
+    return JobMessage_Phase_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& Phase_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, Phase>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function Phase_Name.");
+    return JobMessage_Phase_Name(enum_t_value);
+  }
+  static inline bool Phase_Parse(const std::string& name,
+      Phase* value) {
+    return JobMessage_Phase_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kInputFieldNumber = 1,
+    kJobNameFieldNumber = 5,
+    kPhaseFieldNumber = 2,
+    kNReduceFieldNumber = 3,
+    kNMapFieldNumber = 4,
+  };
+  // repeated string input = 1;
+  int input_size() const;
+  private:
+  int _internal_input_size() const;
+  public:
+  void clear_input();
+  const std::string& input(int index) const;
+  std::string* mutable_input(int index);
+  void set_input(int index, const std::string& value);
+  void set_input(int index, std::string&& value);
+  void set_input(int index, const char* value);
+  void set_input(int index, const char* value, size_t size);
+  std::string* add_input();
+  void add_input(const std::string& value);
+  void add_input(std::string&& value);
+  void add_input(const char* value);
+  void add_input(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& input() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_input();
+  private:
+  const std::string& _internal_input(int index) const;
+  std::string* _internal_add_input();
+  public:
+
+  // string jobName = 5;
+  void clear_jobname();
+  const std::string& jobname() const;
+  void set_jobname(const std::string& value);
+  void set_jobname(std::string&& value);
+  void set_jobname(const char* value);
+  void set_jobname(const char* value, size_t size);
+  std::string* mutable_jobname();
+  std::string* release_jobname();
+  void set_allocated_jobname(std::string* jobname);
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  std::string* unsafe_arena_release_jobname();
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  void unsafe_arena_set_allocated_jobname(
+      std::string* jobname);
+  private:
+  const std::string& _internal_jobname() const;
+  void _internal_set_jobname(const std::string& value);
+  std::string* _internal_mutable_jobname();
+  public:
+
+  // .mapreduce_common.JobMessage.Phase phase = 2;
+  void clear_phase();
+  ::mapreduce_common::JobMessage_Phase phase() const;
+  void set_phase(::mapreduce_common::JobMessage_Phase value);
+  private:
+  ::mapreduce_common::JobMessage_Phase _internal_phase() const;
+  void _internal_set_phase(::mapreduce_common::JobMessage_Phase value);
+  public:
+
+  // int32 nReduce = 3;
+  void clear_nreduce();
+  ::PROTOBUF_NAMESPACE_ID::int32 nreduce() const;
+  void set_nreduce(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_nreduce() const;
+  void _internal_set_nreduce(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 nMap = 4;
+  void clear_nmap();
+  ::PROTOBUF_NAMESPACE_ID::int32 nmap() const;
+  void set_nmap(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_nmap() const;
+  void _internal_set_nmap(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:mapreduce_common.JobMessage)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> input_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr jobname_;
+  int phase_;
+  ::PROTOBUF_NAMESPACE_ID::int32 nreduce_;
+  ::PROTOBUF_NAMESPACE_ID::int32 nmap_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_mapreduce_5fcommon_2eproto;
+};
+// -------------------------------------------------------------------
+
+class Chunk PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:mapreduce_common.Chunk) */ {
+ public:
+  inline Chunk() : Chunk(nullptr) {};
+  virtual ~Chunk();
+
+  Chunk(const Chunk& from);
+  Chunk(Chunk&& from) noexcept
+    : Chunk() {
+    *this = ::std::move(from);
+  }
+
+  inline Chunk& operator=(const Chunk& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Chunk& operator=(Chunk&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const Chunk& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Chunk* internal_default_instance() {
+    return reinterpret_cast<const Chunk*>(
+               &_Chunk_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(Chunk& a, Chunk& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Chunk* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Chunk* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Chunk* New() const final {
+    return CreateMaybeMessage<Chunk>(nullptr);
+  }
+
+  Chunk* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<Chunk>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const Chunk& from);
+  void MergeFrom(const Chunk& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Chunk* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "mapreduce_common.Chunk";
+  }
+  protected:
+  explicit Chunk(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_mapreduce_5fcommon_2eproto);
+    return ::descriptor_table_mapreduce_5fcommon_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kChunkFieldNumber = 1,
+    kPositionFieldNumber = 2,
+    kIdFieldNumber = 3,
+    kUploadIdFieldNumber = 4,
+  };
+  // bytes chunk = 1;
+  void clear_chunk();
+  const std::string& chunk() const;
+  void set_chunk(const std::string& value);
+  void set_chunk(std::string&& value);
+  void set_chunk(const char* value);
+  void set_chunk(const void* value, size_t size);
+  std::string* mutable_chunk();
+  std::string* release_chunk();
+  void set_allocated_chunk(std::string* chunk);
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  std::string* unsafe_arena_release_chunk();
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  void unsafe_arena_set_allocated_chunk(
+      std::string* chunk);
+  private:
+  const std::string& _internal_chunk() const;
+  void _internal_set_chunk(const std::string& value);
+  std::string* _internal_mutable_chunk();
+  public:
+
+  // int32 position = 2;
+  void clear_position();
+  ::PROTOBUF_NAMESPACE_ID::int32 position() const;
+  void set_position(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_position() const;
+  void _internal_set_position(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 id = 3;
+  void clear_id();
+  ::PROTOBUF_NAMESPACE_ID::int32 id() const;
+  void set_id(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_id() const;
+  void _internal_set_id(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // uint32 upload_id = 4;
+  void clear_upload_id();
+  ::PROTOBUF_NAMESPACE_ID::uint32 upload_id() const;
+  void set_upload_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_upload_id() const;
+  void _internal_set_upload_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:mapreduce_common.Chunk)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr chunk_;
+  ::PROTOBUF_NAMESPACE_ID::int32 position_;
+  ::PROTOBUF_NAMESPACE_ID::int32 id_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 upload_id_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_mapreduce_5fcommon_2eproto;
+};
 // ===================================================================
 
 
@@ -199,13 +664,391 @@ class EmptyMessage PROTOBUF_FINAL :
 #endif  // __GNUC__
 // EmptyMessage
 
+// -------------------------------------------------------------------
+
+// JobMessage
+
+// repeated string input = 1;
+inline int JobMessage::_internal_input_size() const {
+  return input_.size();
+}
+inline int JobMessage::input_size() const {
+  return _internal_input_size();
+}
+inline void JobMessage::clear_input() {
+  input_.Clear();
+}
+inline std::string* JobMessage::add_input() {
+  // @@protoc_insertion_point(field_add_mutable:mapreduce_common.JobMessage.input)
+  return _internal_add_input();
+}
+inline const std::string& JobMessage::_internal_input(int index) const {
+  return input_.Get(index);
+}
+inline const std::string& JobMessage::input(int index) const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.JobMessage.input)
+  return _internal_input(index);
+}
+inline std::string* JobMessage::mutable_input(int index) {
+  // @@protoc_insertion_point(field_mutable:mapreduce_common.JobMessage.input)
+  return input_.Mutable(index);
+}
+inline void JobMessage::set_input(int index, const std::string& value) {
+  // @@protoc_insertion_point(field_set:mapreduce_common.JobMessage.input)
+  input_.Mutable(index)->assign(value);
+}
+inline void JobMessage::set_input(int index, std::string&& value) {
+  // @@protoc_insertion_point(field_set:mapreduce_common.JobMessage.input)
+  input_.Mutable(index)->assign(std::move(value));
+}
+inline void JobMessage::set_input(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  input_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:mapreduce_common.JobMessage.input)
+}
+inline void JobMessage::set_input(int index, const char* value, size_t size) {
+  input_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:mapreduce_common.JobMessage.input)
+}
+inline std::string* JobMessage::_internal_add_input() {
+  return input_.Add();
+}
+inline void JobMessage::add_input(const std::string& value) {
+  input_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:mapreduce_common.JobMessage.input)
+}
+inline void JobMessage::add_input(std::string&& value) {
+  input_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:mapreduce_common.JobMessage.input)
+}
+inline void JobMessage::add_input(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  input_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:mapreduce_common.JobMessage.input)
+}
+inline void JobMessage::add_input(const char* value, size_t size) {
+  input_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:mapreduce_common.JobMessage.input)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+JobMessage::input() const {
+  // @@protoc_insertion_point(field_list:mapreduce_common.JobMessage.input)
+  return input_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+JobMessage::mutable_input() {
+  // @@protoc_insertion_point(field_mutable_list:mapreduce_common.JobMessage.input)
+  return &input_;
+}
+
+// .mapreduce_common.JobMessage.Phase phase = 2;
+inline void JobMessage::clear_phase() {
+  phase_ = 0;
+}
+inline ::mapreduce_common::JobMessage_Phase JobMessage::_internal_phase() const {
+  return static_cast< ::mapreduce_common::JobMessage_Phase >(phase_);
+}
+inline ::mapreduce_common::JobMessage_Phase JobMessage::phase() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.JobMessage.phase)
+  return _internal_phase();
+}
+inline void JobMessage::_internal_set_phase(::mapreduce_common::JobMessage_Phase value) {
+  
+  phase_ = value;
+}
+inline void JobMessage::set_phase(::mapreduce_common::JobMessage_Phase value) {
+  _internal_set_phase(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.JobMessage.phase)
+}
+
+// int32 nReduce = 3;
+inline void JobMessage::clear_nreduce() {
+  nreduce_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 JobMessage::_internal_nreduce() const {
+  return nreduce_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 JobMessage::nreduce() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.JobMessage.nReduce)
+  return _internal_nreduce();
+}
+inline void JobMessage::_internal_set_nreduce(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  nreduce_ = value;
+}
+inline void JobMessage::set_nreduce(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_nreduce(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.JobMessage.nReduce)
+}
+
+// int32 nMap = 4;
+inline void JobMessage::clear_nmap() {
+  nmap_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 JobMessage::_internal_nmap() const {
+  return nmap_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 JobMessage::nmap() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.JobMessage.nMap)
+  return _internal_nmap();
+}
+inline void JobMessage::_internal_set_nmap(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  nmap_ = value;
+}
+inline void JobMessage::set_nmap(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_nmap(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.JobMessage.nMap)
+}
+
+// string jobName = 5;
+inline void JobMessage::clear_jobname() {
+  jobname_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& JobMessage::jobname() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.JobMessage.jobName)
+  return _internal_jobname();
+}
+inline void JobMessage::set_jobname(const std::string& value) {
+  _internal_set_jobname(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.JobMessage.jobName)
+}
+inline std::string* JobMessage::mutable_jobname() {
+  // @@protoc_insertion_point(field_mutable:mapreduce_common.JobMessage.jobName)
+  return _internal_mutable_jobname();
+}
+inline const std::string& JobMessage::_internal_jobname() const {
+  return jobname_.Get();
+}
+inline void JobMessage::_internal_set_jobname(const std::string& value) {
+  
+  jobname_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void JobMessage::set_jobname(std::string&& value) {
+  
+  jobname_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:mapreduce_common.JobMessage.jobName)
+}
+inline void JobMessage::set_jobname(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  jobname_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:mapreduce_common.JobMessage.jobName)
+}
+inline void JobMessage::set_jobname(const char* value,
+    size_t size) {
+  
+  jobname_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:mapreduce_common.JobMessage.jobName)
+}
+inline std::string* JobMessage::_internal_mutable_jobname() {
+  
+  return jobname_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* JobMessage::release_jobname() {
+  // @@protoc_insertion_point(field_release:mapreduce_common.JobMessage.jobName)
+  return jobname_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void JobMessage::set_allocated_jobname(std::string* jobname) {
+  if (jobname != nullptr) {
+    
+  } else {
+    
+  }
+  jobname_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), jobname,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:mapreduce_common.JobMessage.jobName)
+}
+inline std::string* JobMessage::unsafe_arena_release_jobname() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:mapreduce_common.JobMessage.jobName)
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  
+  return jobname_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      GetArena());
+}
+inline void JobMessage::unsafe_arena_set_allocated_jobname(
+    std::string* jobname) {
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  if (jobname != nullptr) {
+    
+  } else {
+    
+  }
+  jobname_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      jobname, GetArena());
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:mapreduce_common.JobMessage.jobName)
+}
+
+// -------------------------------------------------------------------
+
+// Chunk
+
+// bytes chunk = 1;
+inline void Chunk::clear_chunk() {
+  chunk_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& Chunk::chunk() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.Chunk.chunk)
+  return _internal_chunk();
+}
+inline void Chunk::set_chunk(const std::string& value) {
+  _internal_set_chunk(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.Chunk.chunk)
+}
+inline std::string* Chunk::mutable_chunk() {
+  // @@protoc_insertion_point(field_mutable:mapreduce_common.Chunk.chunk)
+  return _internal_mutable_chunk();
+}
+inline const std::string& Chunk::_internal_chunk() const {
+  return chunk_.Get();
+}
+inline void Chunk::_internal_set_chunk(const std::string& value) {
+  
+  chunk_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void Chunk::set_chunk(std::string&& value) {
+  
+  chunk_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:mapreduce_common.Chunk.chunk)
+}
+inline void Chunk::set_chunk(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  chunk_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:mapreduce_common.Chunk.chunk)
+}
+inline void Chunk::set_chunk(const void* value,
+    size_t size) {
+  
+  chunk_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:mapreduce_common.Chunk.chunk)
+}
+inline std::string* Chunk::_internal_mutable_chunk() {
+  
+  return chunk_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* Chunk::release_chunk() {
+  // @@protoc_insertion_point(field_release:mapreduce_common.Chunk.chunk)
+  return chunk_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void Chunk::set_allocated_chunk(std::string* chunk) {
+  if (chunk != nullptr) {
+    
+  } else {
+    
+  }
+  chunk_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), chunk,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:mapreduce_common.Chunk.chunk)
+}
+inline std::string* Chunk::unsafe_arena_release_chunk() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:mapreduce_common.Chunk.chunk)
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  
+  return chunk_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      GetArena());
+}
+inline void Chunk::unsafe_arena_set_allocated_chunk(
+    std::string* chunk) {
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  if (chunk != nullptr) {
+    
+  } else {
+    
+  }
+  chunk_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      chunk, GetArena());
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:mapreduce_common.Chunk.chunk)
+}
+
+// int32 position = 2;
+inline void Chunk::clear_position() {
+  position_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 Chunk::_internal_position() const {
+  return position_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 Chunk::position() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.Chunk.position)
+  return _internal_position();
+}
+inline void Chunk::_internal_set_position(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  position_ = value;
+}
+inline void Chunk::set_position(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_position(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.Chunk.position)
+}
+
+// int32 id = 3;
+inline void Chunk::clear_id() {
+  id_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 Chunk::_internal_id() const {
+  return id_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 Chunk::id() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.Chunk.id)
+  return _internal_id();
+}
+inline void Chunk::_internal_set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  id_ = value;
+}
+inline void Chunk::set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_id(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.Chunk.id)
+}
+
+// uint32 upload_id = 4;
+inline void Chunk::clear_upload_id() {
+  upload_id_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Chunk::_internal_upload_id() const {
+  return upload_id_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 Chunk::upload_id() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.Chunk.upload_id)
+  return _internal_upload_id();
+}
+inline void Chunk::_internal_set_upload_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  upload_id_ = value;
+}
+inline void Chunk::set_upload_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_upload_id(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.Chunk.upload_id)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace mapreduce_common
+
+PROTOBUF_NAMESPACE_OPEN
+
+template <> struct is_proto_enum< ::mapreduce_common::JobMessage_Phase> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::mapreduce_common::JobMessage_Phase>() {
+  return ::mapreduce_common::JobMessage_Phase_descriptor();
+}
+
+PROTOBUF_NAMESPACE_CLOSE
 
 // @@protoc_insertion_point(global_scope)
 

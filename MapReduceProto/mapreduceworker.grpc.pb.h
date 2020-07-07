@@ -36,11 +36,11 @@ class MapReduceWorker final {
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    virtual ::grpc::Status Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::mapreduce_common::EmptyMessage* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>> AsyncWork(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) {
+    virtual ::grpc::Status Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::mapreduce_common::EmptyMessage* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>> AsyncWork(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>>(AsyncWorkRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>> PrepareAsyncWork(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>> PrepareAsyncWork(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>>(PrepareAsyncWorkRaw(context, request, cq));
     }
     virtual ::grpc::Status Shutdown(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::mapreduce_common::EmptyMessage* response) = 0;
@@ -53,12 +53,12 @@ class MapReduceWorker final {
     class experimental_async_interface {
      public:
       virtual ~experimental_async_interface() {}
-      virtual void Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response, std::function<void(::grpc::Status)>) = 0;
       virtual void Work(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_common::EmptyMessage* response, std::function<void(::grpc::Status)>) = 0;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      virtual void Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       #else
-      virtual void Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       virtual void Work(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_common::EmptyMessage* response, ::grpc::ClientUnaryReactor* reactor) = 0;
@@ -86,19 +86,19 @@ class MapReduceWorker final {
     #endif
     virtual class experimental_async_interface* experimental_async() { return nullptr; }
   private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>* AsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>* PrepareAsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>* AsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>* PrepareAsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>* AsyncShutdownRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::mapreduce_common::EmptyMessage>* PrepareAsyncShutdownRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel);
-    ::grpc::Status Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::mapreduce_common::EmptyMessage* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>> AsyncWork(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) {
+    ::grpc::Status Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::mapreduce_common::EmptyMessage* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>> AsyncWork(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>>(AsyncWorkRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>> PrepareAsyncWork(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) {
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>> PrepareAsyncWork(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>>(PrepareAsyncWorkRaw(context, request, cq));
     }
     ::grpc::Status Shutdown(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::mapreduce_common::EmptyMessage* response) override;
@@ -111,12 +111,12 @@ class MapReduceWorker final {
     class experimental_async final :
       public StubInterface::experimental_async_interface {
      public:
-      void Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response, std::function<void(::grpc::Status)>) override;
+      void Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response, std::function<void(::grpc::Status)>) override;
       void Work(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_common::EmptyMessage* response, std::function<void(::grpc::Status)>) override;
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-      void Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::ClientUnaryReactor* reactor) override;
       #else
-      void Work(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void Work(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
       #endif
       #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       void Work(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::mapreduce_common::EmptyMessage* response, ::grpc::ClientUnaryReactor* reactor) override;
@@ -146,8 +146,8 @@ class MapReduceWorker final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class experimental_async async_stub_{this};
-    ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* AsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* PrepareAsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_worker::JobMessage& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* AsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* PrepareAsyncWorkRaw(::grpc::ClientContext* context, const ::mapreduce_common::JobMessage& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* AsyncShutdownRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::mapreduce_common::EmptyMessage>* PrepareAsyncShutdownRaw(::grpc::ClientContext* context, const ::mapreduce_common::EmptyMessage& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_Work_;
@@ -159,7 +159,7 @@ class MapReduceWorker final {
    public:
     Service();
     virtual ~Service();
-    virtual ::grpc::Status Work(::grpc::ServerContext* context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response);
+    virtual ::grpc::Status Work(::grpc::ServerContext* context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response);
     virtual ::grpc::Status Shutdown(::grpc::ServerContext* context, const ::mapreduce_common::EmptyMessage* request, ::mapreduce_common::EmptyMessage* response);
   };
   template <class BaseClass>
@@ -174,11 +174,11 @@ class MapReduceWorker final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_worker::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
+    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestWork(::grpc::ServerContext* context, ::mapreduce_worker::JobMessage* request, ::grpc::ServerAsyncResponseWriter< ::mapreduce_common::EmptyMessage>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestWork(::grpc::ServerContext* context, ::mapreduce_common::JobMessage* request, ::grpc::ServerAsyncResponseWriter< ::mapreduce_common::EmptyMessage>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -215,38 +215,38 @@ class MapReduceWorker final {
       ::grpc::Service::experimental().
     #endif
         MarkMethodCallback(0,
-          new ::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_worker::JobMessage, ::mapreduce_common::EmptyMessage>(
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_common::JobMessage, ::mapreduce_common::EmptyMessage>(
             [this](
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
                    ::grpc::CallbackServerContext*
     #else
                    ::grpc::experimental::CallbackServerContext*
     #endif
-                     context, const ::mapreduce_worker::JobMessage* request, ::mapreduce_common::EmptyMessage* response) { return this->Work(context, request, response); }));}
+                     context, const ::mapreduce_common::JobMessage* request, ::mapreduce_common::EmptyMessage* response) { return this->Work(context, request, response); }));}
     void SetMessageAllocatorFor_Work(
-        ::grpc::experimental::MessageAllocator< ::mapreduce_worker::JobMessage, ::mapreduce_common::EmptyMessage>* allocator) {
+        ::grpc::experimental::MessageAllocator< ::mapreduce_common::JobMessage, ::mapreduce_common::EmptyMessage>* allocator) {
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
     #else
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(0);
     #endif
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_worker::JobMessage, ::mapreduce_common::EmptyMessage>*>(handler)
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::mapreduce_common::JobMessage, ::mapreduce_common::EmptyMessage>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~ExperimentalWithCallbackMethod_Work() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_worker::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
+    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     virtual ::grpc::ServerUnaryReactor* Work(
-      ::grpc::CallbackServerContext* /*context*/, const ::mapreduce_worker::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/)
+      ::grpc::CallbackServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/)
     #else
     virtual ::grpc::experimental::ServerUnaryReactor* Work(
-      ::grpc::experimental::CallbackServerContext* /*context*/, const ::mapreduce_worker::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/)
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/)
     #endif
       { return nullptr; }
   };
@@ -314,7 +314,7 @@ class MapReduceWorker final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_worker::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
+    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -348,7 +348,7 @@ class MapReduceWorker final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_worker::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
+    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -401,7 +401,7 @@ class MapReduceWorker final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_worker::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
+    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -459,18 +459,18 @@ class MapReduceWorker final {
    public:
     WithStreamedUnaryMethod_Work() {
       ::grpc::Service::MarkMethodStreamed(0,
-        new ::grpc::internal::StreamedUnaryHandler< ::mapreduce_worker::JobMessage, ::mapreduce_common::EmptyMessage>(std::bind(&WithStreamedUnaryMethod_Work<BaseClass>::StreamedWork, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler< ::mapreduce_common::JobMessage, ::mapreduce_common::EmptyMessage>(std::bind(&WithStreamedUnaryMethod_Work<BaseClass>::StreamedWork, this, std::placeholders::_1, std::placeholders::_2)));
     }
     ~WithStreamedUnaryMethod_Work() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_worker::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
+    ::grpc::Status Work(::grpc::ServerContext* /*context*/, const ::mapreduce_common::JobMessage* /*request*/, ::mapreduce_common::EmptyMessage* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedWork(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::mapreduce_worker::JobMessage,::mapreduce_common::EmptyMessage>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedWork(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::mapreduce_common::JobMessage,::mapreduce_common::EmptyMessage>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_Shutdown : public BaseClass {
