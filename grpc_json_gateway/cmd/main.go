@@ -19,6 +19,15 @@ var (
 	grpcServerEndpoint = flag.String("grpc-server-endpoint", "localhost:5050", "gRPC server endpoint")
 )
 
+func CustomMatcher(key string) (string, bool) {
+	switch key {
+	case "X-Client-Id":
+		return key, true
+	default:
+		return runtime.DefaultHeaderMatcher(key)
+	}
+}
+
 func run() error {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
@@ -26,7 +35,7 @@ func run() error {
 
 	// Register gRPC server endpoint
 	// Note: Make sure the gRPC server is running properly and accessible
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(runtime.WithIncomingHeaderMatcher(CustomMatcher))
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
 	err := gw.RegisterMapReduceMasterHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)

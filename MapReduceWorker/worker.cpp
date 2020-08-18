@@ -275,9 +275,15 @@ void Worker::Report(JobStatus js)
   Status s = report_->ReportStatus(&cliCtx, js, &reply);
   if (!s.ok())
   {
+    std::stringstream ss;
     // log rpc error
     // master died or sth...
-    printf("Not ok, worker\n");
+
+    ss << "Not ok, worker: Err: " << s.error_code() << "\n" << s.error_message() << std::endl;
+    printf(ss.str().c_str());
+    //auto sch = MapReduce::GetScheduler();
+    // Retry again
+    //sch->Schedule(&Worker::Report, this, js);
   } 
 }
 

@@ -15,4 +15,5 @@ int main()
 	Master m;
 	m.Init();
 	m.Start(Master::Mode::DIST);
+
 }

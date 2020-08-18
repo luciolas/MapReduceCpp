@@ -135,7 +135,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <AdditionalDependencies>MapReduceProto.lib;ws2_32.lib;Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -164,6 +164,7 @@
     <ClInclude Include="MapReduce\JobPackage.h" />
     <ClInclude Include="MapReduce\master.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="MapReduce\UploadMetaInfo.h" />
     <ClInclude Include="WorkerHandle\worker_handle.h" />
   </ItemGroup>
   <ItemGroup>

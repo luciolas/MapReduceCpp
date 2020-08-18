@@ -52,7 +52,6 @@ namespace MapReduce
     template<typename ... CArgs>
     T_FnArgs(CArgs&&... args) : TReturn{}, args_{ std::forward<CArgs>(args)... }
     {
-      printf("TFNArgs called");
     }
 
     /*template<typename Callable, typename Ret = R, typename dummy = typename T_FnReturn<Ret>::PReturn, std::size_t... Ns>

@@ -63,21 +63,24 @@ const char descriptor_table_protodef_mapreducemaster_2eproto[] PROTOBUF_SECTION_
   "\001 \001(\0162\".mapreduce_master.JobStatus.Statu"
   "s\022\n\n\002id\030\002 \001(\r\022\016\n\006job_id\030\003 \001(\r\"2\n\006Status\022"
   "\010\n\004IDLE\020\000\022\013\n\007WORKING\020\001\022\010\n\004DONE\020\002\022\007\n\003ERR\020"
-  "\0042\254\004\n\017MapReduceMaster\022s\n\014ReportStatus\022\033."
+  "\0042\214\005\n\017MapReduceMaster\022M\n\014ReportStatus\022\033."
   "mapreduce_master.JobStatus\032\036.mapreduce_c"
-  "ommon.EmptyMessage\"&\202\323\344\223\002 \"\033/v1/mapreduc"
-  "e/report_status:\001*\022^\n\003Job\022\034.mapreduce_co"
-  "mmon.JobMessage\032\033.mapreduce_master.JobSt"
-  "atus\"\034\202\323\344\223\002\026\"\021/v1/mapreduce/job:\001*\022`\n\tGe"
-  "tStatus\022\033.mapreduce_master.JobStatus\032\033.m"
-  "apreduce_master.JobStatus\"\031\202\323\344\223\002\023\022\021/v1/m"
-  "apreduce/job\022q\n\021RequestStreamFile\022\036.mapr"
-  "educe_common.EmptyMessage\032\033.mapreduce_ma"
-  "ster.JobStatus\"\037\202\323\344\223\002\031\"\024/v1/mapreduce/up"
-  "load:\001*\022o\n\nStreamFile\022\027.mapreduce_common"
-  ".Chunk\032\033.mapreduce_master.JobStatus\"+\202\323\344"
-  "\223\002%\" /v1/mapreduce/upload/{upload_id}:\001*"
-  "B\024Z\022.;mapreduce_masterb\006proto3"
+  "ommon.EmptyMessage\"\000\022^\n\003Job\022\034.mapreduce_"
+  "common.JobMessage\032\033.mapreduce_master.Job"
+  "Status\"\034\202\323\344\223\002\026\"\021/v1/mapreduce/job:\001*\022`\n\t"
+  "GetStatus\022\033.mapreduce_master.JobStatus\032\033"
+  ".mapreduce_master.JobStatus\"\031\202\323\344\223\002\023\022\021/v1"
+  "/mapreduce/job\022w\n\021RequestUploadFile\022\032.ma"
+  "preduce_common.MetaData\032\033.mapreduce_mast"
+  "er.JobStatus\")\202\323\344\223\002#\"\036/v1/mapreduce/mult"
+  "ipart/upload:\001*\022y\n\nUploadFile\022\027.mapreduc"
+  "e_common.Chunk\032\033.mapreduce_master.JobSta"
+  "tus\"5\202\323\344\223\002/\"*/v1/mapreduce/multipart/upl"
+  "oad/{upload_id}:\001*\022t\n\nStreamFile\022\037.mapre"
+  "duce_common.UploadRequest\032\033.mapreduce_ma"
+  "ster.JobStatus\"&\202\323\344\223\002 \"\033/v1/mapreduce/st"
+  "ream/upload:\001*(\001B\024Z\022.;mapreduce_masterb\006"
+  "proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_mapreducemaster_2eproto_deps[2] = {
   &::descriptor_table_google_2fapi_2fannotations_2eproto,
@@ -88,7 +91,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_map
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_mapreducemaster_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_mapreducemaster_2eproto = {
-  false, false, descriptor_table_protodef_mapreducemaster_2eproto, "mapreducemaster.proto", 830,
+  false, false, descriptor_table_protodef_mapreducemaster_2eproto, "mapreducemaster.proto", 926,
   &descriptor_table_mapreducemaster_2eproto_once, descriptor_table_mapreducemaster_2eproto_sccs, descriptor_table_mapreducemaster_2eproto_deps, 1, 2,
   schemas, file_default_instances, TableStruct_mapreducemaster_2eproto::offsets,
   file_level_metadata_mapreducemaster_2eproto, 1, file_level_enum_descriptors_mapreducemaster_2eproto, file_level_service_descriptors_mapreducemaster_2eproto,

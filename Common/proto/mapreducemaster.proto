@@ -6,12 +6,7 @@ import "mapreduce_common.proto";
 import "google/api/annotations.proto";
 
 service MapReduceMaster {
-  rpc ReportStatus (JobStatus) returns (mapreduce_common.EmptyMessage) {
-    option (google.api.http) = {
-        post : "/v1/mapreduce/report_status"
-        body : "*"
-    };
-  }
+  rpc ReportStatus (JobStatus) returns (mapreduce_common.EmptyMessage) {}
 
   rpc Job(mapreduce_common.JobMessage) returns (JobStatus) {
     option (google.api.http) = {
@@ -26,18 +21,25 @@ service MapReduceMaster {
     };
   }
 
-  rpc RequestStreamFile(mapreduce_common.EmptyMessage) returns(JobStatus) {
+  rpc RequestUploadFile(mapreduce_common.MetaData) returns(JobStatus) {
     option (google.api.http) = {
-      post : "/v1/mapreduce/upload"
+      post : "/v1/mapreduce/multipart/upload"
       body : "*"
     };
   }
 
-  rpc StreamFile (mapreduce_common.Chunk) returns(JobStatus)  {
+  rpc UploadFile(mapreduce_common.Chunk) returns(JobStatus) {
     option (google.api.http) = {
-      post : "/v1/mapreduce/upload/{upload_id}"
+      post : "/v1/mapreduce/multipart/upload/{upload_id}"
       body : "*"
     };
+  }
+
+  rpc StreamFile (stream mapreduce_common.UploadRequest) returns (JobStatus) {
+    option (google.api.http) = {
+        post : "/v1/mapreduce/stream/upload"
+        body : "*"
+      };
   }
 }
 message JobStatus {

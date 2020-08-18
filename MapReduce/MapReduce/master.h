@@ -34,6 +34,9 @@ using grpc::Status;
 using grpc::ServerContext;
 using mapreduce_common::EmptyMessage;
 using mapreduce_common::JobMessage;
+using mapreduce_common::UploadRequest;
+using mapreduce_common::MetaData;
+using mapreduce_common::Chunk;
 using mapreduce_master::JobStatus;
 using json = nlohmann::json;
 using grpc::Server;
@@ -69,6 +72,8 @@ class Master final : public MapReduceMaster::Service
   // common reduce
   bool _try_work(const JobMessage& job, std::atomic_bool& stop_signal);
   void _poll_jobs(std::atomic_bool& stop_signal);
+  size_t _validate_chunks(const std::string& filePath);
+  void _string_chunks(const std::string& filePath, const std::string& fileName);
 public:
   enum class Mode
   {
@@ -83,10 +88,11 @@ public:
   void BeginSequential(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF);
   void BeginDistributed(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF);
   void BeginRPCDistributed(const std::vector<std::string>& input_files, mapFunc mapf, reduceFunc reduceF);
-  // deprecated
+  // ------------------   deprecated
   std::string GenerateMapName(const std::string& jobName, int mapTaskN, int nReduce);
   std::string GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce);
-  
+  // --------------------------------
+
   void StopAllRPCs();
   void StartRPCs(size_t nworkers);
 
@@ -102,11 +108,18 @@ public:
 
   const concurrent_queue<WorkerHandle>& GetWorkers() const { return workers_; }
 
-  Status ReportStatus(ServerContext* ctx, const JobStatus* req, EmptyMessage* reply);
-  Status Job(ServerContext* ctx, const JobMessage* req, JobStatus* reply);
-  Status GetStatus(ServerContext* ctx, const JobStatus* req, JobStatus* reply);
-  Status StreamFile(ServerContext* ctx, const mapreduce_common::Chunk* req, JobStatus* reply);
-  Status RequestStreamFile(ServerContext* context, const EmptyMessage* request, JobStatus* response);
+
+  // ---------------- GRPC Services ------------------------ //
+  Status ReportStatus(ServerContext* ctx, const JobStatus* req, EmptyMessage* reply) override;
+  Status Job(ServerContext* ctx, const JobMessage* req, JobStatus* reply) override;
+  Status GetStatus(ServerContext* ctx, const JobStatus* req, JobStatus* reply) override;
+  Status UploadFile(ServerContext* context, const Chunk* request, JobStatus* response) override;
+  Status RequestUploadFile(ServerContext* context, const MetaData* request, JobStatus* response) override ;
+  Status StreamFile(ServerContext* ctx, ServerReader< UploadRequest>* reader, JobStatus* reply) override;
+  // ---------------- GRPC Services ------------------------ //
+
+  /// Not implemented 
+  //Status RequestStreamFile(ServerContext* context, const  mapreduce_common::UploadRequest* request, JobStatus* response);
 };
 
 

@@ -48,7 +48,7 @@ struct TableStruct_mapreduce_5fcommon_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[5]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -65,11 +65,19 @@ extern EmptyMessageDefaultTypeInternal _EmptyMessage_default_instance_;
 class JobMessage;
 class JobMessageDefaultTypeInternal;
 extern JobMessageDefaultTypeInternal _JobMessage_default_instance_;
+class MetaData;
+class MetaDataDefaultTypeInternal;
+extern MetaDataDefaultTypeInternal _MetaData_default_instance_;
+class UploadRequest;
+class UploadRequestDefaultTypeInternal;
+extern UploadRequestDefaultTypeInternal _UploadRequest_default_instance_;
 }  // namespace mapreduce_common
 PROTOBUF_NAMESPACE_OPEN
 template<> ::mapreduce_common::Chunk* Arena::CreateMaybeMessage<::mapreduce_common::Chunk>(Arena*);
 template<> ::mapreduce_common::EmptyMessage* Arena::CreateMaybeMessage<::mapreduce_common::EmptyMessage>(Arena*);
 template<> ::mapreduce_common::JobMessage* Arena::CreateMaybeMessage<::mapreduce_common::JobMessage>(Arena*);
+template<> ::mapreduce_common::MetaData* Arena::CreateMaybeMessage<::mapreduce_common::MetaData>(Arena*);
+template<> ::mapreduce_common::UploadRequest* Arena::CreateMaybeMessage<::mapreduce_common::UploadRequest>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace mapreduce_common {
 
@@ -469,6 +477,197 @@ class JobMessage PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
+class MetaData PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:mapreduce_common.MetaData) */ {
+ public:
+  inline MetaData() : MetaData(nullptr) {};
+  virtual ~MetaData();
+
+  MetaData(const MetaData& from);
+  MetaData(MetaData&& from) noexcept
+    : MetaData() {
+    *this = ::std::move(from);
+  }
+
+  inline MetaData& operator=(const MetaData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline MetaData& operator=(MetaData&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const MetaData& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const MetaData* internal_default_instance() {
+    return reinterpret_cast<const MetaData*>(
+               &_MetaData_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(MetaData& a, MetaData& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(MetaData* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(MetaData* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline MetaData* New() const final {
+    return CreateMaybeMessage<MetaData>(nullptr);
+  }
+
+  MetaData* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<MetaData>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const MetaData& from);
+  void MergeFrom(const MetaData& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(MetaData* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "mapreduce_common.MetaData";
+  }
+  protected:
+  explicit MetaData(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_mapreduce_5fcommon_2eproto);
+    return ::descriptor_table_mapreduce_5fcommon_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 1,
+    kIdFieldNumber = 2,
+    kSizeFieldNumber = 3,
+  };
+  // string name = 1;
+  void clear_name();
+  const std::string& name() const;
+  void set_name(const std::string& value);
+  void set_name(std::string&& value);
+  void set_name(const char* value);
+  void set_name(const char* value, size_t size);
+  std::string* mutable_name();
+  std::string* release_name();
+  void set_allocated_name(std::string* name);
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  std::string* unsafe_arena_release_name();
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  void unsafe_arena_set_allocated_name(
+      std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // string id = 2;
+  void clear_id();
+  const std::string& id() const;
+  void set_id(const std::string& value);
+  void set_id(std::string&& value);
+  void set_id(const char* value);
+  void set_id(const char* value, size_t size);
+  std::string* mutable_id();
+  std::string* release_id();
+  void set_allocated_id(std::string* id);
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  std::string* unsafe_arena_release_id();
+  GOOGLE_PROTOBUF_RUNTIME_DEPRECATED("The unsafe_arena_ accessors for"
+  "    string fields are deprecated and will be removed in a"
+  "    future release.")
+  void unsafe_arena_set_allocated_id(
+      std::string* id);
+  private:
+  const std::string& _internal_id() const;
+  void _internal_set_id(const std::string& value);
+  std::string* _internal_mutable_id();
+  public:
+
+  // int32 size = 3;
+  void clear_size();
+  ::PROTOBUF_NAMESPACE_ID::int32 size() const;
+  void set_size(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_size() const;
+  void _internal_set_size(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:mapreduce_common.MetaData)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr id_;
+  ::PROTOBUF_NAMESPACE_ID::int32 size_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_mapreduce_5fcommon_2eproto;
+};
+// -------------------------------------------------------------------
+
 class Chunk PROTOBUF_FINAL :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:mapreduce_common.Chunk) */ {
  public:
@@ -511,7 +710,7 @@ class Chunk PROTOBUF_FINAL :
                &_Chunk_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   friend void swap(Chunk& a, Chunk& b) {
     a.Swap(&b);
@@ -583,9 +782,8 @@ class Chunk PROTOBUF_FINAL :
 
   enum : int {
     kChunkFieldNumber = 1,
+    kUploadIdFieldNumber = 3,
     kPositionFieldNumber = 2,
-    kIdFieldNumber = 3,
-    kUploadIdFieldNumber = 4,
   };
   // bytes chunk = 1;
   void clear_chunk();
@@ -612,6 +810,15 @@ class Chunk PROTOBUF_FINAL :
   std::string* _internal_mutable_chunk();
   public:
 
+  // uint64 upload_id = 3;
+  void clear_upload_id();
+  ::PROTOBUF_NAMESPACE_ID::uint64 upload_id() const;
+  void set_upload_id(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint64 _internal_upload_id() const;
+  void _internal_set_upload_id(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  public:
+
   // int32 position = 2;
   void clear_position();
   ::PROTOBUF_NAMESPACE_ID::int32 position() const;
@@ -619,24 +826,6 @@ class Chunk PROTOBUF_FINAL :
   private:
   ::PROTOBUF_NAMESPACE_ID::int32 _internal_position() const;
   void _internal_set_position(::PROTOBUF_NAMESPACE_ID::int32 value);
-  public:
-
-  // int32 id = 3;
-  void clear_id();
-  ::PROTOBUF_NAMESPACE_ID::int32 id() const;
-  void set_id(::PROTOBUF_NAMESPACE_ID::int32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_id() const;
-  void _internal_set_id(::PROTOBUF_NAMESPACE_ID::int32 value);
-  public:
-
-  // uint32 upload_id = 4;
-  void clear_upload_id();
-  ::PROTOBUF_NAMESPACE_ID::uint32 upload_id() const;
-  void set_upload_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_upload_id() const;
-  void _internal_set_upload_id(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:mapreduce_common.Chunk)
@@ -647,10 +836,204 @@ class Chunk PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr chunk_;
+  ::PROTOBUF_NAMESPACE_ID::uint64 upload_id_;
   ::PROTOBUF_NAMESPACE_ID::int32 position_;
-  ::PROTOBUF_NAMESPACE_ID::int32 id_;
-  ::PROTOBUF_NAMESPACE_ID::uint32 upload_id_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_mapreduce_5fcommon_2eproto;
+};
+// -------------------------------------------------------------------
+
+class UploadRequest PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:mapreduce_common.UploadRequest) */ {
+ public:
+  inline UploadRequest() : UploadRequest(nullptr) {};
+  virtual ~UploadRequest();
+
+  UploadRequest(const UploadRequest& from);
+  UploadRequest(UploadRequest&& from) noexcept
+    : UploadRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline UploadRequest& operator=(const UploadRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline UploadRequest& operator=(UploadRequest&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const UploadRequest& default_instance();
+
+  enum ReqCase {
+    kChunk = 1,
+    kMetadata = 2,
+    REQ_NOT_SET = 0,
+  };
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const UploadRequest* internal_default_instance() {
+    return reinterpret_cast<const UploadRequest*>(
+               &_UploadRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(UploadRequest& a, UploadRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(UploadRequest* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(UploadRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline UploadRequest* New() const final {
+    return CreateMaybeMessage<UploadRequest>(nullptr);
+  }
+
+  UploadRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<UploadRequest>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const UploadRequest& from);
+  void MergeFrom(const UploadRequest& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(UploadRequest* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "mapreduce_common.UploadRequest";
+  }
+  protected:
+  explicit UploadRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_mapreduce_5fcommon_2eproto);
+    return ::descriptor_table_mapreduce_5fcommon_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUploadIdFieldNumber = 3,
+    kChunkFieldNumber = 1,
+    kMetadataFieldNumber = 2,
+  };
+  // uint64 upload_id = 3;
+  void clear_upload_id();
+  ::PROTOBUF_NAMESPACE_ID::uint64 upload_id() const;
+  void set_upload_id(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint64 _internal_upload_id() const;
+  void _internal_set_upload_id(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  public:
+
+  // .mapreduce_common.Chunk chunk = 1;
+  bool has_chunk() const;
+  private:
+  bool _internal_has_chunk() const;
+  public:
+  void clear_chunk();
+  const ::mapreduce_common::Chunk& chunk() const;
+  ::mapreduce_common::Chunk* release_chunk();
+  ::mapreduce_common::Chunk* mutable_chunk();
+  void set_allocated_chunk(::mapreduce_common::Chunk* chunk);
+  private:
+  const ::mapreduce_common::Chunk& _internal_chunk() const;
+  ::mapreduce_common::Chunk* _internal_mutable_chunk();
+  public:
+  void unsafe_arena_set_allocated_chunk(
+      ::mapreduce_common::Chunk* chunk);
+  ::mapreduce_common::Chunk* unsafe_arena_release_chunk();
+
+  // .mapreduce_common.MetaData metadata = 2;
+  bool has_metadata() const;
+  private:
+  bool _internal_has_metadata() const;
+  public:
+  void clear_metadata();
+  const ::mapreduce_common::MetaData& metadata() const;
+  ::mapreduce_common::MetaData* release_metadata();
+  ::mapreduce_common::MetaData* mutable_metadata();
+  void set_allocated_metadata(::mapreduce_common::MetaData* metadata);
+  private:
+  const ::mapreduce_common::MetaData& _internal_metadata() const;
+  ::mapreduce_common::MetaData* _internal_mutable_metadata();
+  public:
+  void unsafe_arena_set_allocated_metadata(
+      ::mapreduce_common::MetaData* metadata);
+  ::mapreduce_common::MetaData* unsafe_arena_release_metadata();
+
+  void clear_req();
+  ReqCase req_case() const;
+  // @@protoc_insertion_point(class_scope:mapreduce_common.UploadRequest)
+ private:
+  class _Internal;
+  void set_has_chunk();
+  void set_has_metadata();
+
+  inline bool has_req() const;
+  inline void clear_has_req();
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::uint64 upload_id_;
+  union ReqUnion {
+    ReqUnion() {}
+    ::mapreduce_common::Chunk* chunk_;
+    ::mapreduce_common::MetaData* metadata_;
+  } req_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 _oneof_case_[1];
+
   friend struct ::TableStruct_mapreduce_5fcommon_2eproto;
 };
 // ===================================================================
@@ -885,6 +1268,192 @@ inline void JobMessage::unsafe_arena_set_allocated_jobname(
 
 // -------------------------------------------------------------------
 
+// MetaData
+
+// string name = 1;
+inline void MetaData::clear_name() {
+  name_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& MetaData::name() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.MetaData.name)
+  return _internal_name();
+}
+inline void MetaData::set_name(const std::string& value) {
+  _internal_set_name(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.MetaData.name)
+}
+inline std::string* MetaData::mutable_name() {
+  // @@protoc_insertion_point(field_mutable:mapreduce_common.MetaData.name)
+  return _internal_mutable_name();
+}
+inline const std::string& MetaData::_internal_name() const {
+  return name_.Get();
+}
+inline void MetaData::_internal_set_name(const std::string& value) {
+  
+  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void MetaData::set_name(std::string&& value) {
+  
+  name_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:mapreduce_common.MetaData.name)
+}
+inline void MetaData::set_name(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:mapreduce_common.MetaData.name)
+}
+inline void MetaData::set_name(const char* value,
+    size_t size) {
+  
+  name_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:mapreduce_common.MetaData.name)
+}
+inline std::string* MetaData::_internal_mutable_name() {
+  
+  return name_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* MetaData::release_name() {
+  // @@protoc_insertion_point(field_release:mapreduce_common.MetaData.name)
+  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void MetaData::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:mapreduce_common.MetaData.name)
+}
+inline std::string* MetaData::unsafe_arena_release_name() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:mapreduce_common.MetaData.name)
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  
+  return name_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      GetArena());
+}
+inline void MetaData::unsafe_arena_set_allocated_name(
+    std::string* name) {
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  name_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      name, GetArena());
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:mapreduce_common.MetaData.name)
+}
+
+// string id = 2;
+inline void MetaData::clear_id() {
+  id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline const std::string& MetaData::id() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.MetaData.id)
+  return _internal_id();
+}
+inline void MetaData::set_id(const std::string& value) {
+  _internal_set_id(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.MetaData.id)
+}
+inline std::string* MetaData::mutable_id() {
+  // @@protoc_insertion_point(field_mutable:mapreduce_common.MetaData.id)
+  return _internal_mutable_id();
+}
+inline const std::string& MetaData::_internal_id() const {
+  return id_.Get();
+}
+inline void MetaData::_internal_set_id(const std::string& value) {
+  
+  id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value, GetArena());
+}
+inline void MetaData::set_id(std::string&& value) {
+  
+  id_.Set(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:mapreduce_common.MetaData.id)
+}
+inline void MetaData::set_id(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value),
+              GetArena());
+  // @@protoc_insertion_point(field_set_char:mapreduce_common.MetaData.id)
+}
+inline void MetaData::set_id(const char* value,
+    size_t size) {
+  
+  id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:mapreduce_common.MetaData.id)
+}
+inline std::string* MetaData::_internal_mutable_id() {
+  
+  return id_.Mutable(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline std::string* MetaData::release_id() {
+  // @@protoc_insertion_point(field_release:mapreduce_common.MetaData.id)
+  return id_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void MetaData::set_allocated_id(std::string* id) {
+  if (id != nullptr) {
+    
+  } else {
+    
+  }
+  id_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), id,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:mapreduce_common.MetaData.id)
+}
+inline std::string* MetaData::unsafe_arena_release_id() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:mapreduce_common.MetaData.id)
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  
+  return id_.UnsafeArenaRelease(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      GetArena());
+}
+inline void MetaData::unsafe_arena_set_allocated_id(
+    std::string* id) {
+  GOOGLE_DCHECK(GetArena() != nullptr);
+  if (id != nullptr) {
+    
+  } else {
+    
+  }
+  id_.UnsafeArenaSetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      id, GetArena());
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:mapreduce_common.MetaData.id)
+}
+
+// int32 size = 3;
+inline void MetaData::clear_size() {
+  size_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 MetaData::_internal_size() const {
+  return size_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 MetaData::size() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.MetaData.size)
+  return _internal_size();
+}
+inline void MetaData::_internal_set_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  size_ = value;
+}
+inline void MetaData::set_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_size(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.MetaData.size)
+}
+
+// -------------------------------------------------------------------
+
 // Chunk
 
 // bytes chunk = 1;
@@ -988,49 +1557,212 @@ inline void Chunk::set_position(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:mapreduce_common.Chunk.position)
 }
 
-// int32 id = 3;
-inline void Chunk::clear_id() {
-  id_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 Chunk::_internal_id() const {
-  return id_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 Chunk::id() const {
-  // @@protoc_insertion_point(field_get:mapreduce_common.Chunk.id)
-  return _internal_id();
-}
-inline void Chunk::_internal_set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  id_ = value;
-}
-inline void Chunk::set_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_id(value);
-  // @@protoc_insertion_point(field_set:mapreduce_common.Chunk.id)
-}
-
-// uint32 upload_id = 4;
+// uint64 upload_id = 3;
 inline void Chunk::clear_upload_id() {
-  upload_id_ = 0u;
+  upload_id_ = PROTOBUF_ULONGLONG(0);
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Chunk::_internal_upload_id() const {
+inline ::PROTOBUF_NAMESPACE_ID::uint64 Chunk::_internal_upload_id() const {
   return upload_id_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::uint32 Chunk::upload_id() const {
+inline ::PROTOBUF_NAMESPACE_ID::uint64 Chunk::upload_id() const {
   // @@protoc_insertion_point(field_get:mapreduce_common.Chunk.upload_id)
   return _internal_upload_id();
 }
-inline void Chunk::_internal_set_upload_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void Chunk::_internal_set_upload_id(::PROTOBUF_NAMESPACE_ID::uint64 value) {
   
   upload_id_ = value;
 }
-inline void Chunk::set_upload_id(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+inline void Chunk::set_upload_id(::PROTOBUF_NAMESPACE_ID::uint64 value) {
   _internal_set_upload_id(value);
   // @@protoc_insertion_point(field_set:mapreduce_common.Chunk.upload_id)
 }
 
+// -------------------------------------------------------------------
+
+// UploadRequest
+
+// .mapreduce_common.Chunk chunk = 1;
+inline bool UploadRequest::_internal_has_chunk() const {
+  return req_case() == kChunk;
+}
+inline bool UploadRequest::has_chunk() const {
+  return _internal_has_chunk();
+}
+inline void UploadRequest::set_has_chunk() {
+  _oneof_case_[0] = kChunk;
+}
+inline void UploadRequest::clear_chunk() {
+  if (_internal_has_chunk()) {
+    if (GetArena() == nullptr) {
+      delete req_.chunk_;
+    }
+    clear_has_req();
+  }
+}
+inline ::mapreduce_common::Chunk* UploadRequest::release_chunk() {
+  // @@protoc_insertion_point(field_release:mapreduce_common.UploadRequest.chunk)
+  if (_internal_has_chunk()) {
+    clear_has_req();
+      ::mapreduce_common::Chunk* temp = req_.chunk_;
+    if (GetArena() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    req_.chunk_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::mapreduce_common::Chunk& UploadRequest::_internal_chunk() const {
+  return _internal_has_chunk()
+      ? *req_.chunk_
+      : *reinterpret_cast< ::mapreduce_common::Chunk*>(&::mapreduce_common::_Chunk_default_instance_);
+}
+inline const ::mapreduce_common::Chunk& UploadRequest::chunk() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.UploadRequest.chunk)
+  return _internal_chunk();
+}
+inline ::mapreduce_common::Chunk* UploadRequest::unsafe_arena_release_chunk() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:mapreduce_common.UploadRequest.chunk)
+  if (_internal_has_chunk()) {
+    clear_has_req();
+    ::mapreduce_common::Chunk* temp = req_.chunk_;
+    req_.chunk_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void UploadRequest::unsafe_arena_set_allocated_chunk(::mapreduce_common::Chunk* chunk) {
+  clear_req();
+  if (chunk) {
+    set_has_chunk();
+    req_.chunk_ = chunk;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:mapreduce_common.UploadRequest.chunk)
+}
+inline ::mapreduce_common::Chunk* UploadRequest::_internal_mutable_chunk() {
+  if (!_internal_has_chunk()) {
+    clear_req();
+    set_has_chunk();
+    req_.chunk_ = CreateMaybeMessage< ::mapreduce_common::Chunk >(GetArena());
+  }
+  return req_.chunk_;
+}
+inline ::mapreduce_common::Chunk* UploadRequest::mutable_chunk() {
+  // @@protoc_insertion_point(field_mutable:mapreduce_common.UploadRequest.chunk)
+  return _internal_mutable_chunk();
+}
+
+// .mapreduce_common.MetaData metadata = 2;
+inline bool UploadRequest::_internal_has_metadata() const {
+  return req_case() == kMetadata;
+}
+inline bool UploadRequest::has_metadata() const {
+  return _internal_has_metadata();
+}
+inline void UploadRequest::set_has_metadata() {
+  _oneof_case_[0] = kMetadata;
+}
+inline void UploadRequest::clear_metadata() {
+  if (_internal_has_metadata()) {
+    if (GetArena() == nullptr) {
+      delete req_.metadata_;
+    }
+    clear_has_req();
+  }
+}
+inline ::mapreduce_common::MetaData* UploadRequest::release_metadata() {
+  // @@protoc_insertion_point(field_release:mapreduce_common.UploadRequest.metadata)
+  if (_internal_has_metadata()) {
+    clear_has_req();
+      ::mapreduce_common::MetaData* temp = req_.metadata_;
+    if (GetArena() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    req_.metadata_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::mapreduce_common::MetaData& UploadRequest::_internal_metadata() const {
+  return _internal_has_metadata()
+      ? *req_.metadata_
+      : *reinterpret_cast< ::mapreduce_common::MetaData*>(&::mapreduce_common::_MetaData_default_instance_);
+}
+inline const ::mapreduce_common::MetaData& UploadRequest::metadata() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.UploadRequest.metadata)
+  return _internal_metadata();
+}
+inline ::mapreduce_common::MetaData* UploadRequest::unsafe_arena_release_metadata() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:mapreduce_common.UploadRequest.metadata)
+  if (_internal_has_metadata()) {
+    clear_has_req();
+    ::mapreduce_common::MetaData* temp = req_.metadata_;
+    req_.metadata_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void UploadRequest::unsafe_arena_set_allocated_metadata(::mapreduce_common::MetaData* metadata) {
+  clear_req();
+  if (metadata) {
+    set_has_metadata();
+    req_.metadata_ = metadata;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:mapreduce_common.UploadRequest.metadata)
+}
+inline ::mapreduce_common::MetaData* UploadRequest::_internal_mutable_metadata() {
+  if (!_internal_has_metadata()) {
+    clear_req();
+    set_has_metadata();
+    req_.metadata_ = CreateMaybeMessage< ::mapreduce_common::MetaData >(GetArena());
+  }
+  return req_.metadata_;
+}
+inline ::mapreduce_common::MetaData* UploadRequest::mutable_metadata() {
+  // @@protoc_insertion_point(field_mutable:mapreduce_common.UploadRequest.metadata)
+  return _internal_mutable_metadata();
+}
+
+// uint64 upload_id = 3;
+inline void UploadRequest::clear_upload_id() {
+  upload_id_ = PROTOBUF_ULONGLONG(0);
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint64 UploadRequest::_internal_upload_id() const {
+  return upload_id_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint64 UploadRequest::upload_id() const {
+  // @@protoc_insertion_point(field_get:mapreduce_common.UploadRequest.upload_id)
+  return _internal_upload_id();
+}
+inline void UploadRequest::_internal_set_upload_id(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+  
+  upload_id_ = value;
+}
+inline void UploadRequest::set_upload_id(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+  _internal_set_upload_id(value);
+  // @@protoc_insertion_point(field_set:mapreduce_common.UploadRequest.upload_id)
+}
+
+inline bool UploadRequest::has_req() const {
+  return req_case() != REQ_NOT_SET;
+}
+inline void UploadRequest::clear_has_req() {
+  _oneof_case_[0] = REQ_NOT_SET;
+}
+inline UploadRequest::ReqCase UploadRequest::req_case() const {
+  return UploadRequest::ReqCase(_oneof_case_[0]);
+}
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

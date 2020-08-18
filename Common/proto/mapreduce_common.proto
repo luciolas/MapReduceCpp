@@ -3,10 +3,9 @@ syntax = "proto3";
 package mapreduce_common;
 option go_package = ".;mapreduce_master";
 
+
 message EmptyMessage {
 }
-
-
 
 message JobMessage {
   enum Phase {
@@ -20,12 +19,24 @@ message JobMessage {
   int32 nReduce = 3;
   int32 nMap = 4;
   string jobName = 5;
+}
 
+message MetaData {
+  string name = 1;
+  string id =2;
+  int32  size = 3;
 }
 
 message Chunk {
   bytes chunk = 1;
   int32 position = 2;
-  int32 id = 3;
-  uint32 upload_id = 4;
+  uint64 upload_id = 3;
+}
+
+message UploadRequest {
+  oneof req { 
+    Chunk chunk =1;
+    MetaData metadata = 2;
+  }
+  uint64 upload_id = 3;
 }

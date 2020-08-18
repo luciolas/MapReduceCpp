@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapReduce", "MapReduce\MapReduce.vcxproj", "{8843A0A5-4F06-486F-980F-2D486834226D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3B90328C-1388-4327-8520-7CFF1D9A25D0} = {3B90328C-1388-4327-8520-7CFF1D9A25D0}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchedulerTests", "SchedulerTests\SchedulerTests.vcxproj", "{BC2140F1-BBF1-4A90-9FB2-8AEDF41A8747}"
 EndProject

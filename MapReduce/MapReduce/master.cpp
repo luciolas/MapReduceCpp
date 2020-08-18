@@ -284,7 +284,7 @@ void Master::StartRPCs(size_t nworkers)
   for (size_t i = 0; i < len; i++)
   {
     ZeroMemory(cmdline, sizeof(cmdline));
-    swprintf_s(cmdline, L"%s %d %d %d","MapReduceWorker.exe", port, worker_port++, i);
+    swprintf_s(cmdline, L"%s %d %d %d",L"MapReduceWorker.exe", port, worker_port++, i);
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
     ZeroMemory(&si, sizeof(si));
@@ -302,7 +302,7 @@ void Master::StartRPCs(size_t nworkers)
       &si,
       &pi))
     {
-      printf("Failed to open process (%d)", GetLastError());
+      printf("Failed to start worker process (%d)", GetLastError());
       continue;
     }
     CloseHandle(pi.hProcess);
@@ -312,7 +312,7 @@ void Master::StartRPCs(size_t nworkers)
 
 HANDLE Master::StartGateway()
 {
-  LPCWSTR processName = L"../grpc_json_gateway/cmd/cmd.exe";
+  LPCWSTR processName = L"../../grpc_json_gateway/cmd/cmd.exe";
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
   ZeroMemory(&si, sizeof(si));
@@ -330,7 +330,7 @@ HANDLE Master::StartGateway()
     &si,
     &pi))
   {
-    printf("Failed to open process (%d)", GetLastError());
+    printf("Failed to start gateway process (%d)", GetLastError());
   }
   CloseHandle(pi.hThread);
 
@@ -459,45 +459,90 @@ Status Master::GetStatus(ServerContext* ctx, const JobStatus* req, JobStatus* re
   return Status::OK;
 }
 
-Status Master::StreamFile(ServerContext* ctx, const mapreduce_common::Chunk* req, JobStatus* reply)
+Status Master::UploadFile(ServerContext* context, const Chunk* request, JobStatus* response)
 {
-  std::stringstream& ss = chunk_cache_[req->upload_id()];
-  auto size = req->chunk().size();
+  auto client_md = context->client_metadata();
+  auto client_it = client_md.find("x-client-id");
+  if (client_it == client_md.end())
+  {
+    return Status{ grpc::StatusCode::UNAUTHENTICATED, "missing client auth" };
+  }
+  // Read upload_id
+  auto found = chunk_cache_.find((size_t)request->upload_id());
+  if (found == chunk_cache_.end())
+  {
+    return Status{ grpc::StatusCode::NOT_FOUND, std::string{"invalid upload id"} };
+  }
+  std::stringstream path;
+  path << client_it->second << "/" << request->upload_id() << "/";
+  auto size = request->chunk().size();
+    //Get chunk cache
   if (size == 0)
   {
-    // Write file to filesystem
-    std::stringstream path;
-    path << req->upload_id();
-    fs::create_directories(path.str());
-    path << "/" << "file_0";
-    std::ofstream ofs{path.str(), std::ofstream::out};
-    ofs << ss.rdbuf();
-    ofs.close();
-
-    // TODO: Prevent further writing with the same upload_id
-    chunk_cache_[req->upload_id()] = std::stringstream{};
+    std::stringstream metaPath;
+    metaPath << path.rdbuf() << "meta";
+    std::ifstream ifs{metaPath.str() , std::ifstream::in };
+    if (ifs.is_open())
+    {
+      std::string line[4];
+      auto i = 0;
+      while (std::getline(ifs, line[i++]));
+      auto sch = MapReduce::GetScheduler();
+      sch->Schedule(&Master::_string_chunks, this, path.str(), line[2]);
+    }
+    ifs.close();
   }
-  else if (size < (1 << 20))
-  {
+  else if (size <= (1 << 16))
+  {    
     // TODO: Parts ID/positional chunking
-    ss << req->chunk();
+    std::stringstream chunkID;
+    chunkID << path.rdbuf();
+    chunkID << request->position();
+    chunkID << ".chunk";
+    std::ofstream ofs{ chunkID.str(), std::ofstream::binary };
+    if (ofs.is_open())
+    {
+      ofs << request->chunk();
+    }
+    ofs.close();
   }
   else
   {
     return Status{ grpc::StatusCode::RESOURCE_EXHAUSTED, std::string{"chunk over 1MB"} };
   }
-
   return Status::OK;
 }
-
-Status Master::RequestStreamFile(ServerContext* context, const EmptyMessage* request, JobStatus* response)
+//-------------------------------------------------------------------------------------//
+Status Master::RequestUploadFile(ServerContext* context, const MetaData* request, JobStatus* response)
 {
   const auto upload_id = random_int();
+  auto client_md = context->client_metadata();
+  auto client_it = client_md.find("x-client-id");
+  if (client_it == client_md.end())
+  {
+    return Status{ grpc::StatusCode::UNAUTHENTICATED, "missing client auth" };
+  }
+
+  // Create upload session folders
+  std::stringstream path;
+  path << client_it->second << "/" << upload_id;
+  fs::create_directories(path.str());
+
+  std::stringstream meta;
+  meta << client_it->second << std::endl << upload_id << std::endl << request->name() << std::endl << request->size();
+  std::ofstream ofs{ path.str()  + "/" + "meta", std::ofstream::out };
+  ofs << meta.rdbuf();
+  ofs.close();
+
+  // chunk cache
   chunk_cache_[upload_id] = std::stringstream{};
   response->set_id(upload_id);
+  response->set_job_id(upload_id);
+  response->set_status(mapreduce_master::JobStatus_Status::JobStatus_Status_IDLE);
+  
   return Status::OK;
 }
-
+//-------------------------------------------------------------------------------------//
 void Master::Init()
 {
 
@@ -513,7 +558,7 @@ void Master::Init()
 
   std::cout << "Listening to: " << port << std::endl;
 }
-
+//-------------------------------------------------------------------------------------//
 void Master::Start(Mode mode)
 {
   auto* s = ::MapReduce::GetScheduler();
@@ -526,24 +571,27 @@ void Master::Start(Mode mode)
     {
       if (server_)
       {
+        printf("Listening...\n");
         server_->Wait();
+        printf("Stop listening...\n");
       }
     });
   // TODO: Config mode: MT, Seq, Dist
-  if (mode == Mode::DIST)
-  {
-    StartRPCs(10);
-  }
+  
   auto gw_handle = StartGateway();
 
 
   DEFER([&]() { TerminateProcess(gw_handle, 0); });
   auto poller_wait = s->Schedule(&Master::_poll_jobs, this, std::ref(poller_stop_signal));
-
+  if (mode == Mode::DIST)
+  {
+    StartRPCs(10);
+  }
   grpc_server_wait.wait();
+  printf("End\n");
 }
 
-
+//-------------------------------------------------------------------------------------//
 void Master::doMap(const std::string& jobName,const std::string& file, int mapTaskN, int nReduce, mapFunc mapf)
 {
   // Read files
@@ -595,6 +643,198 @@ void Master::doMap(const std::string& jobName,const std::string& file, int mapTa
     }
   }
 }
+//-------------------------------------------------------------------------------------//
+bool Master::_try_work(const JobMessage& job, std::atomic_bool& stop_signal)
+{
+  ClientContext ctx;
+  EmptyMessage empty;
+  while (true)
+  {
+    if (stop_signal.load())
+    {
+      return true;
+    }
+    WorkerHandle wrker;
+    if (!workers_.try_pop(wrker))
+    {
+      continue;
+    }
+    auto status = (*wrker)->Work(&ctx, job, &empty);
+    if (status.ok())
+    {
+      return true;
+    }
+    else
+    {
+      workers_.push(wrker);
+      std::cout << "Error: " << status.error_code() << " " << status.error_message() << std::endl;
+    }
+  }
+  return false;
+}
+//-------------------------------------------------------------------------------------//
+void Master::_poll_jobs(std::atomic_bool& stop_signal)
+{
+
+  while (true)
+  {
+    //poll jobs
+    if (stop_signal.load())
+    {
+      return;
+    }
+    JobPackage* jp;
+    if (!job_queue_.try_pop(jp))
+    {
+      continue;
+    }
+
+    JobMessage jb;
+    std::stringstream id;
+    jb.set_nmap(jp->files.size());
+    id << jp->id;
+    jb.set_jobname(id.str());
+    jb.set_phase((JobMessage::Phase)jp->phase);
+    jb.set_nreduce(DEFAULT_REDUCE);
+
+    if (jp->phase == JobPackage::Phase::MAP)
+    {
+      for (size_t i = 0; i < jp->files.size(); ++i)
+      {
+        jb.add_input(jp->files[i]);
+        if (jb.input_size() % MAP_PER_WORKER == 0)
+        {
+          jb.set_nmap(i + 1 - MAP_PER_WORKER);
+          _try_work(jb, stop_signal);
+          jb.clear_input();
+        }
+      }
+      if (jb.input_size() > 0)
+      {
+        jb.set_nmap(jp->files.size() - jb.input_size());
+        _try_work(jb, stop_signal);
+      }
+    }
+    else if (jp->phase == JobPackage::Phase::REDUCE)
+    {
+      for (size_t i = 0; i < DEFAULT_REDUCE; i++)
+      {
+        jb.set_nreduce(i);
+        _try_work(jb, stop_signal);
+      }
+    }
+    else
+    {
+      _try_work(jb, stop_signal);
+    }
+  }
+
+
+}
+//-------------------------------------------------------------------------------------//
+size_t Master::_validate_chunks(const std::string& filePath)
+{
+
+  return size_t();
+}
+//-------------------------------------------------------------------------------------//
+void Master::_string_chunks(const std::string& filesDir, const std::string& outputFileName)
+{
+  std::map<size_t, std::string> files;
+  // Read all .chunk files.
+  for (auto& p : fs::directory_iterator(filesDir))
+  {
+    if (p.path().extension().compare(".chunk") == 0)
+    {
+      auto fileName = p.path().filename();
+      size_t fileNumber = atoi(fileName.string().c_str());
+      files.insert(std::make_pair(fileNumber, p.path().string()));
+    }
+  }
+
+  // Create a file with outputFileName (file name contains the ext)
+  std::stringstream outputDir;
+  outputDir << filesDir  << outputFileName;
+  std::ofstream output{ outputDir.str(), std::ofstream::binary };
+  DEFER([&]() { output.close(); });
+  // Append them from 0...N
+  for (const auto& fit : files)
+  {
+    const auto& filepath = fit.second;
+    std::ifstream chunkFile{ filepath, std::ifstream::binary };
+    DEFER([&]() { chunkFile.close(); });
+    if (chunkFile.is_open())
+    {
+      output << chunkFile.rdbuf();
+    }
+  }
+}
+//-------------------------------------------------------------------------------------//
+std::string Master::GenerateMapName(const std::string& jobName, int mapTaskN, int nReduce)
+{
+  std::stringstream ss;
+  ss << jobName << "-" << mapTaskN << "-" << nReduce << "map";
+  return std::string();
+}
+//-------------------------------------------------------------------------------------//
+std::string Master::GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce)
+{
+  std::stringstream ss;
+  ss << jobName << "-" << "reduce-" << mapTaskN << "-" << nReduce;
+  return ss.str();;
+}
+//-------------------------------------------------------------------------------------//
+void to_json(json& j, const KeyValue& p) {
+  j = json{ { "Key", p.Key },{ "Value", p.Value }, };
+}
+//-------------------------------------------------------------------------------------//
+void from_json(const json& j, KeyValue& p) {
+  j.at("Key").get_to(p.Key);
+  j.at("Value").get_to(p.Value);
+}
+
+//-------------------------------------------------------------------------------------//
+
+Status Master::StreamFile(ServerContext* ctx, ServerReader< UploadRequest>* reader, JobStatus* reply)
+{
+  mapreduce_common::UploadRequest upload_request;
+  while (reader->Read(&upload_request))
+  {
+    // Read upload_id
+    std::stringstream& ss = chunk_cache_[(size_t)upload_request.upload_id()];
+    auto size = upload_request.chunk().chunk().size();
+    //Get chunk cache
+    if (size == 0)
+    {
+      // Write file to filesystem
+      std::stringstream path;
+      path << upload_request.upload_id();
+      fs::create_directories(path.str());
+      path << "/" << "file_0";
+      std::ofstream ofs{ path.str(), std::ofstream::out };
+      ofs << ss.rdbuf();
+      ofs.close();
+
+      // TODO: Prevent further writing with the same upload_id
+      chunk_cache_[upload_request.upload_id()] = std::stringstream{};
+    }
+    else if (size < (1 << 16))
+    {
+      // TODO: Parts ID/positional chunking
+      ss << upload_request.chunk().chunk();
+    }
+    else
+    {
+      return Status{ grpc::StatusCode::RESOURCE_EXHAUSTED, std::string{"chunk over 1MB"} };
+    }
+  }
+
+  return Status::OK;
+}
+
+
+
+/////////////////////////// NOT IMPLEMENTED YET//////////////////////////////
 
 
 void Master::DownloadFiles()
@@ -632,115 +872,4 @@ void Master::DownloadFiles()
 
   curl_easy_cleanup(easyhandle);*/
 
-}
-
-bool Master::_try_work(const JobMessage& job, std::atomic_bool& stop_signal)
-{
-  ClientContext ctx;
-  EmptyMessage empty;
-  while (true)
-  {
-    if (stop_signal.load())
-    {
-      return true;
-    }
-    WorkerHandle wrker;
-    if (!workers_.try_pop(wrker))
-    {
-      continue;
-    }
-    auto status = (*wrker)->Work(&ctx, job, &empty);
-    if (status.ok())
-    {
-      return true;
-    }
-    else
-    {
-      workers_.push(wrker);
-      std::cout << "Error: " << status.error_code() << " " << status.error_message() << std::endl;
-    }
-  }
-  return false;
-}
-
-void Master::_poll_jobs(std::atomic_bool& stop_signal)
-{
-
-  while (true)
-  {
-    //poll jobs
-    if (stop_signal.load())
-    {
-      return;
-    }
-    JobPackage* jp;
-    if (!job_queue_.try_pop(jp))
-    {
-      continue;
-    }
-
-    JobMessage jb;
-    std::stringstream id;
-    jb.set_nmap(jp->files.size());
-    id << jp->id;
-    jb.set_jobname(id.str());
-    jb.set_phase((JobMessage::Phase)jp->phase);
-    jb.set_nreduce(DEFAULT_REDUCE);
-
-    if (jp->phase == JobPackage::Phase::MAP)
-    {
-      for (size_t i =0; i < jp->files.size(); ++i)
-      {
-        jb.add_input(jp->files[i]);
-        if (jb.input_size() % MAP_PER_WORKER == 0)
-        {
-          jb.set_nmap(i + 1 - MAP_PER_WORKER );
-          _try_work(jb, stop_signal);
-          jb.clear_input();
-        }
-      }
-      if (jb.input_size() > 0)
-      {
-        jb.set_nmap(jp->files.size() - jb.input_size());
-        _try_work(jb, stop_signal);
-      }
-    }
-    else if (jp->phase == JobPackage::Phase::REDUCE)
-    {
-      for (size_t i = 0; i < DEFAULT_REDUCE; i++)
-      {
-        jb.set_nreduce(i);
-        _try_work(jb, stop_signal);
-      }
-    }
-    else
-    {
-      _try_work(jb, stop_signal);
-    }
-  }
-
-  
-}
-
-std::string Master::GenerateMapName(const std::string& jobName, int mapTaskN, int nReduce)
-{
-  std::stringstream ss;
-  ss << jobName << "-" << mapTaskN << "-" << nReduce << "map";
-  return std::string();
-}
-
-std::string Master::GenerateReduceName(const std::string& jobName, int mapTaskN, int nReduce)
-{
-  std::stringstream ss;
-  ss << jobName << "-"  << "reduce-" << mapTaskN << "-" << nReduce;
-  return ss.str();;
-}
-
-void to_json(json& j, const KeyValue& p) {
-  j = json{ { "Key", p.Key },{ "Value", p.Value }, };
-}
-
-void from_json(const json& j, KeyValue& p) {
-  j.at("Key").get_to(p.Key);
-  j.at("Value").get_to(p.Value);
 }

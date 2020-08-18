@@ -38,5 +38,8 @@
     <ClInclude Include="MapReduce\JobPackage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MapReduce\UploadMetaInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
