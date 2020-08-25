@@ -21,6 +21,12 @@ service MapReduceMaster {
     };
   }
 
+  rpc GetStoredFiles(mapreduce_common.GetFilesInfoReq) returns (mapreduce_common.FilesInfoResp) {
+    option (google.api.http) = {
+      get : "/v1/mapreduce/files "
+    };
+  }
+
   rpc RequestUploadFile(mapreduce_common.MetaData) returns(JobStatus) {
     option (google.api.http) = {
       post : "/v1/mapreduce/multipart/upload"

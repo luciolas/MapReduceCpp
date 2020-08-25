@@ -40,3 +40,11 @@ message UploadRequest {
   }
   uint64 upload_id = 3;
 }
+
+message GetFilesInfoReq {
+  
+}
+
+message FilesInfoResp {
+  repeated uint64 upload_id = 1;
+}
